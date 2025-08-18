@@ -2,7 +2,7 @@
 import { createRouteHandler } from 'crawlee';
 import { buildSnapshot } from './utils/snapshot';
 import { getDomainContext } from './domainContext';
-import { runExtractors } from './extractors';
+import { runExtractors } from './extractors/runExtractors';
 import { recomputeScore, shouldStop } from './stopRules';
 import { discoverLinks } from './utils/url';
 import { persistAndPush } from './utils/output';
