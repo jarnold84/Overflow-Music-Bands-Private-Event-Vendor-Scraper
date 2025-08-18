@@ -1,4 +1,3 @@
-// Detects keywords related to services offered
 export function extractServices(html: string): string[] {
     const services: string[] = [];
     const serviceKeywords = [
@@ -6,3 +5,12 @@ export function extractServices(html: string): string[] {
         'floral design', 'catering', 'event rentals', 'av production',
         'transportation', 'makeup', 'venue', 'decor', 'invitations'
     ];
+
+    serviceKeywords.forEach(keyword => {
+        if (html.toLowerCase().includes(keyword)) {
+            services.push(keyword);
+        }
+    });
+
+    return services;
+}
