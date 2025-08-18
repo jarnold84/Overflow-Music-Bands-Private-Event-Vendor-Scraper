@@ -51,6 +51,7 @@ export interface DomainContext {
   bestEmail?: string;
   vendorType?: string;
   vendorConfidence?: number;
+  vendorName?: string;
   score: number; // 0..1
   stopReason?: string;
 }
