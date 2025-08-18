@@ -54,3 +54,10 @@ export interface DomainContext {
   score: number; // 0..1
   stopReason?: string;
 }
+
+export interface PageSnapshot {
+  url: string;
+  title: string;
+  html: string;
+  text: string;
+}
