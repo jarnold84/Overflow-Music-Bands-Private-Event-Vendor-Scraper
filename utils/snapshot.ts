@@ -2,13 +2,24 @@
 
 import { Page } from 'playwright';
 
+/**
+ * A structured snapshot of a web page, capturing key content and metadata.
+ */
 export interface PageSnapshot {
     url: string;
     title: string;
     html: string;
-    text?: string;
+    text: string;
 }
 
+/**
+ * Builds a snapshot of the current page, including its HTML content,
+ * text content, title, and URL.
+ *
+ * @param page - The Playwright Page object
+ * @param url - The canonical URL for the page (typically request.url)
+ * @returns A PageSnapshot object
+ */
 export async function buildSnapshot(page: Page, url: string): Promise<PageSnapshot> {
     const html = await page.content();
     const title = await page.title();
