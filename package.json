@@ -1,0 +1,17 @@
+{
+  "name": "overflow-music-bands-private-event-vendor-scraper",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/actor.js",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "apify": "^3.1.2",
+    "crawlee": "^3.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.4.5"
+  }
+}
