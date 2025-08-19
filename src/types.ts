@@ -127,15 +127,21 @@ export interface Lead {
 }
 
 export interface MessagePersona {
-  domain: string;
   segmentFocus?: string;
   eventTypes?: string[];
   styleVibe?: string[];
   clienteleProfile?: string;
   services?: string[];
-  opsNotes?: string[];
+  capacity?: string; // ✅ add this line
   location?: string;
-  metro?: string;
+  serviceRadius?: string;
   values?: string[];
-  bestHookIdeas?: string[];
+  socialProof?: string[];
+  fnbMinimumUSD?: number | null;
+  revMinimumUSD?: number | null;
+  bookingLink?: string | null;
+  people?: Contact[];
+  company?: string;
+  bestHookIdeas: string[];
 }
+
