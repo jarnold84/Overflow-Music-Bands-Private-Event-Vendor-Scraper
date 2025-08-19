@@ -8,7 +8,7 @@ export function chooseBestContact(contacts: Contact[]): Contact | null {
     /bookings/i,
     /sales/i,
     /info/i,
-    /contact/i,
+    /contact/i
   ];
 
   for (const pattern of priorityPatterns) {
