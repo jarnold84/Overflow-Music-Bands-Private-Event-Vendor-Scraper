@@ -1,8 +1,9 @@
 {
-  "name": "Overflow-Music-Bands-Private-Event-Vendor-Scraper",
+  "name": "overflow-music-bands-private-event-vendor-scraper",
   "description": "Extracts high-value lead and messaging data from vendor websites for weddings and corporate/private events.",
   "version": "0.1",
-  "main": "src/actor.ts",
+  "main": "dist/actor.js",
+  "build": "npm run build",
   "buildTag": "latest",
   "actorSpecification": 1,
   "meta": {
