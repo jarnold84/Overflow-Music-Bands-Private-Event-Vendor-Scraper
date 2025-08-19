@@ -1,39 +1,52 @@
-// File: src/extractors/runExtractors.ts
+// File: src/runExtractors.ts
 
-import type { PageSnapshot } from '../utils/snapshot';
-import type { DomainContext } from '../types';
-import { addSignals } from '../domainContext';
+import type { PageSnapshot } from './utils/snapshot';
+import type { DomainContext, CampaignMode } from './types';
 
-import { extractEmails } from './email';
-import { extractPhones } from './phone';
-import { extractAddress } from './address';
-import { extractAbout } from './about';
-import { extractServices } from './services';
-import { extractSocials } from './socials';
-import { extractStyleVibe } from './styleVibe';
-import { extractVendorName } from './name';
+import { extractEmails } from './extractors/email';
+import { extractPhones } from './extractors/phone';
+import { extractStyleVibe } from './extractors/styleVibe';
+import { extractServices } from './extractors/services';
+import { extractAddress } from './extractors/address';
+import { extractSocials } from './extractors/socials';
+import { extractVendorName } from './extractors/name';
+import { chooseBestContact } from './parsers/contactChooser';
+import { classifyVendor } from './parsers/vendorClassifier';
+import { normalizeLocation } from './parsers/locationNorm';
 
 export async function runExtractors(
   snapshot: PageSnapshot,
-  domainCtx: DomainContext,
-  campaignMode: string
-) {
-  // Core signal structure for aggregation
-  const signals = {
-    url: snapshot.url,
-    title: snapshot.title,
-    emails: extractEmails(snapshot.html),
-    phoneCandidates: extractPhones(snapshot.html),
-    contactUrl: null, // Optional: add logic or scraping
-    rfpUrl: null,     // Optional: add logic or scraping
-  };
+  ctx: DomainContext,
+  mode: CampaignMode
+): Promise<void> {
+  const html = snapshot.html;
+  const text = snapshot.text;
 
-  // Push signal bundle to domain context
-  addSignals(domainCtx, signals, snapshot.html);
+  // Basic contact extraction
+  const emails = extractEmails(text);
+  const phones = extractPhones(text);
 
-  // Side-channel enrichments: non-signal contextual data
-  domainCtx.services = extractServices(snapshot.html);
-  domainCtx.socials = extractSocials(snapshot.html);
-  domainCtx.styleVibe = extractStyleVibe(snapshot.html);
-  domainCtx.vendorName = extractVendorName(snapshot.html);
+  ctx.contacts = emails.map((email) => ({ email }));
+  ctx.contacts.forEach((c, i) => {
+    if (phones[i]) c.phone = phones[i];
+  });
+
+  ctx.bestContact = chooseBestContact(ctx.contacts);
+
+  // Vendor classification
+  ctx.vendor = classifyVendor(text, mode);
+  ctx.vendor.name = extractVendorName(html);
+
+  // Services and style
+  ctx.services = extractServices(text);
+  ctx.styleVibe = extractStyleVibe(text);
+
+  // Address/location
+  const address = extractAddress(text);
+  if (address) {
+    ctx.location = normalizeLocation(address);
+  }
+
+  // Socials
+  ctx.socials = extractSocials(html);
 }
