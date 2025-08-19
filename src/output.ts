@@ -1,55 +1,54 @@
 // File: src/output.ts
 import { Dataset } from 'crawlee';
-import type { DomainContext } from './types';
+import type { DomainContext, Lead, MessagePersona } from './types';
 
 export async function persistAndPush(domainCtx: DomainContext, cfg: any) {
-    const { domain, evidence, ...rest } = domainCtx;
+    const { domain, evidence = [], ...rest } = domainCtx;
 
-    // Extract final email or contact from people[] or fallback
-    const primaryEmail = domainCtx.email ?? domainCtx.people?.[0]?.email ?? null;
-
-    const lead = {
+    const lead: Lead = {
         domain,
         seedUrl: domainCtx.seedUrl,
-        company: domainCtx.company ?? null,
-        aboutText: domainCtx.aboutText ?? null,
-        aboutSummary: domainCtx.aboutSummary ?? null,
+        email: domainCtx.email ?? domainCtx.people?.[0]?.email ?? null,
+        phones: domainCtx.phones ?? [],
+        vendorName: domainCtx.vendorName ?? null,
         vendorType: domainCtx.vendorType ?? null,
         vendorConfidence: domainCtx.vendorConfidence ?? null,
-        segmentFocus: domainCtx.segmentFocus ?? [],
-        eventTypes: domainCtx.eventTypes ?? [],
-        services: domainCtx.services ?? [],
-        styleVibe: domainCtx.styleVibe ?? [],
-        clienteleProfile: domainCtx.clienteleProfile ?? [],
-        portfolio: domainCtx.portfolio ?? null,
-        values: domainCtx.values ?? [],
-        socialProof: domainCtx.socialProof ?? null,
-        capacity: domainCtx.capacity ?? null,
-        fnbMinimumUSD: domainCtx.fnbMinimumUSD ?? null,
-        revMinimumUSD: domainCtx.revMinimumUSD ?? null,
-        restrictions: domainCtx.restrictions ?? [],
-        bookingLink: domainCtx.bookingLink ?? null,
+        contactUrl: domainCtx.contactUrl ?? null,
         rfpUrl: domainCtx.rfpUrl ?? null,
-        rfpOnly: domainCtx.rfpOnly ?? null,
-        email: primaryEmail,
-        phones: domainCtx.phones ?? [],
         contactPage: domainCtx.contactPage ?? null,
         formOnly: domainCtx.formOnly ?? null,
-        address: domainCtx.address ?? null,
+        rfpOnly: domainCtx.rfpOnly ?? null,
+        company: domainCtx.company ?? null,
+        services: domainCtx.services ?? [],
+        styleVibe: domainCtx.styleVibe ?? [],
+        socials: domainCtx.socials ?? {},
         city: domainCtx.city ?? null,
         state: domainCtx.state ?? null,
         country: domainCtx.country ?? null,
         metro: domainCtx.metro ?? null,
+        address: domainCtx.address ?? null,
+        people: domainCtx.people ?? [],
+        capacity: domainCtx.capacity ?? null,
+        aboutText: domainCtx.aboutText ?? null,
+        aboutSummary: domainCtx.aboutSummary ?? null,
+        clienteleProfile: domainCtx.clienteleProfile ?? [],
+        segmentFocus: domainCtx.segmentFocus ?? [],
+        eventTypes: domainCtx.eventTypes ?? [],
+        values: domainCtx.values ?? [],
+        portfolio: domainCtx.portfolio ?? null,
+        socialProof: domainCtx.socialProof ?? null,
+        fnbMinimumUSD: domainCtx.fnbMinimumUSD ?? null,
+        revMinimumUSD: domainCtx.revMinimumUSD ?? null,
+        restrictions: domainCtx.restrictions ?? [],
+        bookingLink: domainCtx.bookingLink ?? null,
         serviceRadius: domainCtx.serviceRadius ?? null,
         travelPolicy: domainCtx.travelPolicy ?? null,
-        socials: domainCtx.socials ?? {},
-        people: domainCtx.people ?? [],
-        evidence: domainCtx.evidence ?? [],
+        evidence,
         crawlRunId: cfg.runId ?? 'dev',
         ts: new Date().toISOString(),
     };
 
-    const persona = {
+    const persona: MessagePersona = {
         company: lead.company,
         vendorType: lead.vendorType,
         segmentFocus: lead.segmentFocus,
