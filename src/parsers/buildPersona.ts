@@ -14,7 +14,12 @@ export function buildPersonaFromLead(lead: Lead): MessagePersona {
     clienteleProfile: lead.clienteleProfile ?? 'not specified',
     services: lead.services ?? [],
     capacity: lead.capacityNotes ?? 'not specified',
-    location: [lead.metro, lead.city, lead.state, lead.country].filter(Boolean).join(', '),
+    location: [
+      lead.location?.metro,
+      lead.location?.city,
+      lead.location?.state,
+      lead.location?.country,
+    ].filter(Boolean).join(', '),
     serviceRadius: lead.serviceRadius ?? 'N/A',
     values: Array.isArray(lead.values) ? lead.values : [lead.values].filter(Boolean),
     socialProof: Array.isArray(lead.socialProof) ? lead.socialProof : [lead.socialProof].filter(Boolean),
