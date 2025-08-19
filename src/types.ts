@@ -1,5 +1,3 @@
-// File: src/types.ts
-
 export type CampaignMode = 'wedding' | 'corporate' | 'mixed';
 
 export interface ActorInput {
@@ -18,53 +16,17 @@ export interface ActorInput {
   proxyConfiguration?: any;
 }
 
+// Core page signals extracted from a single page visit
 export interface PageSignals {
   url: string;
   title?: string;
   emails?: string[];
   phoneCandidates?: string[];
-  rfpUrl?: string | null;
   contactUrl?: string | null;
-}
-
-export interface Lead {
-  domain: string;
-  seedUrl: string;
-  company?: string;
-  email?: string;
-  phones?: string[];
-  contactPage?: string | null;
   rfpUrl?: string | null;
-  vendorType?: string;
-  vendorConfidence?: number;
-  services?: string[];
-  styleVibe?: string[];
-  segmentFocus?: string[];
-  eventTypes?: string[];
-  city?: string;
-  state?: string;
-  country?: string;
-  metro?: string;
-  socials?: Record<string, string>;
-  people?: any[];
-  portfolio?: any;
-  values?: string[];
-  socialProof?: any;
-  capacity?: any;
-  fnbMinimumUSD?: number;
-  revMinimumUSD?: number;
-  bookingLink?: string;
-  address?: string;
-  serviceRadius?: string;
-  travelPolicy?: string;
-  restrictions?: string[];
-  formOnly?: boolean;
-  rfpOnly?: boolean;
-  evidence?: string[];
-  crawlRunId: string;
-  ts: string;
 }
 
+// Context maintained across all pages for a domain
 export interface DomainContext {
   domain: string;
   seedUrl: string;
@@ -72,35 +34,115 @@ export interface DomainContext {
   signals: PageSignals[];
   email?: string;
   phones?: string[];
-  contactPage?: string | null;
-  rfpUrl?: string | null;
-  company?: string;
+  vendorName?: string;
   vendorType?: string;
   vendorConfidence?: number;
+  contactUrl?: string;
+  rfpUrl?: string;
+  company?: string;
   services?: string[];
   styleVibe?: string[];
-  segmentFocus?: string[];
-  eventTypes?: string[];
+  socials?: Record<string, string>;
   city?: string;
   state?: string;
   country?: string;
   metro?: string;
-  socials?: Record<string, string>;
+  address?: string;
   people?: any[];
-  portfolio?: any;
-  values?: string[];
-  socialProof?: any;
   capacity?: any;
+  aboutText?: string;
+  aboutSummary?: string;
+  clienteleProfile?: string[];
+  segmentFocus?: string[];
+  eventTypes?: string[];
+  values?: string[];
+  portfolio?: any;
+  socialProof?: any;
   fnbMinimumUSD?: number;
   revMinimumUSD?: number;
-  bookingLink?: string;
-  address?: string;
-  serviceRadius?: string;
-  travelPolicy?: string;
   restrictions?: string[];
+  bookingLink?: string;
+  contactPage?: string;
   formOnly?: boolean;
   rfpOnly?: boolean;
-  evidence?: string[];
+  serviceRadius?: string;
+  travelPolicy?: string;
   score: number;
   stopReason?: string;
+  evidence?: string[]; // Titles, key phrases, links, etc.
+}
+
+// Final output structure pushed to Dataset
+export interface Lead {
+  domain: string;
+  seedUrl: string;
+  email?: string;
+  phones?: string[];
+  vendorName?: string;
+  vendorType?: string;
+  vendorConfidence?: number;
+  contactUrl?: string;
+  rfpUrl?: string;
+  contactPage?: string;
+  formOnly?: boolean;
+  rfpOnly?: boolean;
+  company?: string;
+  services?: string[];
+  styleVibe?: string[];
+  socials?: Record<string, string>;
+  city?: string;
+  state?: string;
+  country?: string;
+  metro?: string;
+  address?: string;
+  people?: any[];
+  capacity?: any;
+  aboutText?: string;
+  aboutSummary?: string;
+  clienteleProfile?: string[];
+  segmentFocus?: string[];
+  eventTypes?: string[];
+  values?: string[];
+  portfolio?: any;
+  socialProof?: any;
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  restrictions?: string[];
+  bookingLink?: string;
+  serviceRadius?: string;
+  travelPolicy?: string;
+  evidence?: string[];
+  crawlRunId: string;
+  ts: string;
+}
+
+// Final persona object for downstream messaging
+export interface MessagePersona {
+  company?: string;
+  vendorType?: string;
+  segmentFocus?: string[];
+  eventTypes?: string[];
+  orgType?: string;
+  teamSize?: string;
+  styleVibe?: string[];
+  clienteleProfile?: string[];
+  services?: string[];
+  capacitySummary?: string | null;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+    metro?: string;
+  };
+  serviceRadius?: string | null;
+  values?: string[];
+  socialProof?: any;
+  ops?: {
+    fnbMinimumUSD?: number;
+    revMinimumUSD?: number;
+    rfpUrl?: string;
+    bookingLink?: string;
+  };
+  contactSuggestion?: any;
+  bestHookIdeas?: string[];
 }
