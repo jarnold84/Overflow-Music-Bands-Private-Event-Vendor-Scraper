@@ -10,8 +10,9 @@
     "apify": "^3.1.2",
     "crawlee": "^3.9.2"
   },
-  "devDependencies": {
-    "@types/node": "^20.11.30",
-    "typescript": "^5.4.5"
+"dependencies": {
+  "typescript": "^5.4.5",
+  "apify": "^3.4.4",
+  "crawlee": "^3.14.0"
   }
 }
