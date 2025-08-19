@@ -33,18 +33,21 @@ export function addSignals(ctx: DomainContext, sig: PageSignals) {
     priorityPatterns.some((p) => p.test(c.email) || p.test(c.role))
   ) || allContacts[0];
 
-  // Merge other top-level fields from signals
+  // Merge best contact fields
   ctx.email = ctx.bestContact?.email;
   ctx.phone = ctx.bestContact?.phone;
   ctx.contactPage = ctx.bestContact?.contactPage;
   ctx.rfpUrl = ctx.bestContact?.rfpUrl;
 
-  // Merge location and metadata from signals if not already set
+  // Ensure location object exists
+  ctx.location ??= {};
+
+  // Merge other top-level fields from signals
   for (const s of ctx.signals) {
-    ctx.city ??= s.city;
-    ctx.state ??= s.state;
-    ctx.country ??= s.country;
-    ctx.metro ??= s.metro;
+    ctx.location.city ??= s.city;
+    ctx.location.state ??= s.state;
+    ctx.location.country ??= s.country;
+    ctx.location.metro ??= s.metro;
     ctx.segmentFocus ??= s.segmentFocus;
     ctx.eventTypes ??= s.eventTypes;
     ctx.services ??= s.services;
