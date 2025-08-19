@@ -1,3 +1,5 @@
+// File: src/types.ts
+
 export type CampaignMode = 'wedding' | 'corporate' | 'mixed';
 
 export interface ActorInput {
@@ -28,16 +30,36 @@ export interface PageSignals {
 export interface Lead {
   domain: string;
   seedUrl: string;
-  vendorType?: string;
-  vendorConfidence?: number;
+  company?: string;
   email?: string;
   phones?: string[];
   contactPage?: string | null;
   rfpUrl?: string | null;
+  vendorType?: string;
+  vendorConfidence?: number;
   services?: string[];
   styleVibe?: string[];
-  city?: string; state?: string; country?: string; metro?: string;
+  segmentFocus?: string[];
+  eventTypes?: string[];
+  city?: string;
+  state?: string;
+  country?: string;
+  metro?: string;
   socials?: Record<string, string>;
+  people?: any[];
+  portfolio?: any;
+  values?: string[];
+  socialProof?: any;
+  capacity?: any;
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  bookingLink?: string;
+  address?: string;
+  serviceRadius?: string;
+  travelPolicy?: string;
+  restrictions?: string[];
+  formOnly?: boolean;
+  rfpOnly?: boolean;
   evidence?: string[];
   crawlRunId: string;
   ts: string;
@@ -48,17 +70,37 @@ export interface DomainContext {
   seedUrl: string;
   pagesVisited: Set<string>;
   signals: PageSignals[];
-  bestEmail?: string;
+  email?: string;
+  phones?: string[];
+  contactPage?: string | null;
+  rfpUrl?: string | null;
+  company?: string;
   vendorType?: string;
   vendorConfidence?: number;
-  vendorName?: string;
-  score: number; // 0..1
+  services?: string[];
+  styleVibe?: string[];
+  segmentFocus?: string[];
+  eventTypes?: string[];
+  city?: string;
+  state?: string;
+  country?: string;
+  metro?: string;
+  socials?: Record<string, string>;
+  people?: any[];
+  portfolio?: any;
+  values?: string[];
+  socialProof?: any;
+  capacity?: any;
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  bookingLink?: string;
+  address?: string;
+  serviceRadius?: string;
+  travelPolicy?: string;
+  restrictions?: string[];
+  formOnly?: boolean;
+  rfpOnly?: boolean;
+  evidence?: string[];
+  score: number;
   stopReason?: string;
-}
-
-export interface PageSnapshot {
-  url: string;
-  title: string;
-  html: string;
-  text: string;
 }
