@@ -2,16 +2,14 @@
 
 export interface Contact {
   name?: string;
+  role?: string;
   email?: string;
   phone?: string;
-  role?: string;
   contactPage?: string;
   rfpUrl?: string;
 }
 
 export interface PageSignals {
-  emails?: string[];
-  phones?: string[];
   contacts?: Contact[];
   city?: string;
   state?: string;
@@ -19,18 +17,17 @@ export interface PageSignals {
   metro?: string;
   segmentFocus?: string;
   eventTypes?: string[];
-  styleVibe?: string[];
-  clienteleProfile?: string;
   services?: string[];
+  styleVibe?: string[];
   capacityNotes?: string;
   serviceRadius?: string;
   socialProof?: string[] | string;
   values?: string[] | string;
-  fnbMinimumUSD?: number;
-  revMinimumUSD?: number;
   bookingLink?: string;
   people?: Contact[];
   vendorName?: string;
+  phoneCandidates?: string[];
+  contactUrl?: string;
   portfolioLinks?: string[];
 }
 
@@ -39,27 +36,30 @@ export interface DomainContext {
   seedUrl: string;
   pagesVisited: Set<string>;
   signals: PageSignals[];
-  score: number;
-
-  // Contacts
-  contacts?: Contact[];
   bestContact?: Contact;
-  phone?: string;
-  contactPage?: string;
-  rfpUrl?: string;
-  email?: string;
-
-  // Metadata
+  contacts?: Contact[];
   vendorType?: string;
   vendorConfidence?: number;
   vendorName?: string;
-  company?: string;
+  score: number;
+  stopReason?: string;
+  email?: string;
+  phone?: string;
+  contactPage?: string;
+  rfpUrl?: string;
 
+  company?: string;
   segmentFocus?: string;
   eventTypes?: string[];
   styleVibe?: string[];
   clienteleProfile?: string;
   services?: string[];
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+    metro?: string;
+  };
   serviceRadius?: string;
   values?: string[] | string;
   socialProof?: string[] | string;
@@ -71,30 +71,16 @@ export interface DomainContext {
   portfolioLinks?: string[];
   crawlRunId?: string;
   ts?: string;
-
-  // Location
-  location?: {
-    city?: string;
-    state?: string;
-    country?: string;
-    metro?: string;
-  };
-
-  // Other
-  stopReason?: string;
 }
 
 export interface Lead {
   domain: string;
-  seedUrl: string;
+  vendorType?: string;
+  vendorName?: string;
   email?: string;
   phone?: string;
   contactPage?: string;
   rfpUrl?: string;
-  vendorType?: string;
-  vendorName?: string;
-  company?: string;
-  vendorConfidence?: number;
   segmentFocus?: string;
   eventTypes?: string[];
   styleVibe?: string[];
@@ -102,10 +88,10 @@ export interface Lead {
   services?: string[];
   capacityNotes?: string;
   location?: {
+    metro?: string;
     city?: string;
     state?: string;
     country?: string;
-    metro?: string;
   };
   serviceRadius?: string;
   values?: string[] | string;
@@ -114,7 +100,7 @@ export interface Lead {
   revMinimumUSD?: number;
   bookingLink?: string;
   people?: Contact[];
-  portfolioLinks?: string[];
+  company?: string;
   crawlRunId?: string;
   ts?: string;
 }
@@ -136,9 +122,4 @@ export interface MessagePersona {
   people?: Contact[];
   company?: string;
   bestHookIdeas: string[];
-}
-
-export interface ActorInput {
-  startUrls: { url: string }[];
-  campaignMode?: 'wedding' | 'corporate' | 'mixed';
 }
