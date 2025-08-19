@@ -18,19 +18,20 @@ export async function runExtractors(
   domainCtx: DomainContext,
   campaignMode: string
 ) {
+  // Core signal structure for aggregation
   const signals = {
     url: snapshot.url,
     title: snapshot.title,
     emails: extractEmails(snapshot.html),
     phoneCandidates: extractPhones(snapshot.html),
-    contactUrl: null, // optional: add logic later
-    rfpUrl: null,     // optional: add logic later
+    contactUrl: null, // Optional: add logic or scraping
+    rfpUrl: null,     // Optional: add logic or scraping
   };
 
-  // Core assignments
-  addSignals(domainCtx, signals);
+  // Push signal bundle to domain context
+  addSignals(domainCtx, signals, snapshot.html);
 
-  // Side-channel enrichments (add to ctx directly)
+  // Side-channel enrichments: non-signal contextual data
   domainCtx.services = extractServices(snapshot.html);
   domainCtx.socials = extractSocials(snapshot.html);
   domainCtx.styleVibe = extractStyleVibe(snapshot.html);
