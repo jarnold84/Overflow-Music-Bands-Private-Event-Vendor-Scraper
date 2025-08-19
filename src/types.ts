@@ -23,32 +23,31 @@ export interface Contact {
   role?: string;
   email?: string;
   phone?: string;
-  evidence?: string[];
+  contactPage?: string;
+  rfpUrl?: string;
 }
 
 export interface PageSignals {
   url: string;
   title?: string;
-  emails?: string[];
-  phones?: string[];
-  socials?: Record<string, string>;
+  html?: string;
+  text?: string;
   contacts?: Contact[];
+  city?: string;
+  state?: string;
+  country?: string;
+  metro?: string;
+  segmentFocus?: string;
+  eventTypes?: string[];
   services?: string[];
   styleVibe?: string[];
-  location?: string;
   capacityNotes?: string;
-  portfolioUrls?: string[];
-  company?: string;
-  rfpUrl?: string;
-  bookingLink?: string;
-  values?: string[];
-  testimonials?: string[];
-  clienteleProfile?: string;
-  eventTypes?: string[];
-  segmentFocus?: string;
   serviceRadius?: string;
-  fnbMinimumUSD?: number;
-  revMinimumUSD?: number;
+  socialProof?: string[];
+  values?: string[];
+  bookingLink?: string;
+  people?: Contact[];
+  vendorName?: string;
 }
 
 export interface DomainContext {
@@ -56,72 +55,70 @@ export interface DomainContext {
   seedUrl: string;
   pagesVisited: Set<string>;
   signals: PageSignals[];
+  bestContact?: Contact;
+  contacts?: Contact[];
+  vendorType?: string;
+  vendorConfidence?: number;
+  vendorName?: string;
   score: number;
   stopReason?: string;
 
-  // Flattened merged fields
-  bestContact?: Contact;
+  // Additional fields merged post-extraction
   company?: string;
-  vendorName?: string;
-  vendorType?: string;
-  vendorConfidence?: number;
-  email?: string;
-  phones?: string[];
-  contactPage?: string | null;
-  rfpUrl?: string | null;
-  bookingLink?: string | null;
-  services?: string[];
-  styleVibe?: string[];
-  location?: string;
-  capacityNotes?: string;
-  socials?: Record<string, string>;
-  people?: Contact[];
-  metro?: string;
-  city?: string;
-  state?: string;
-  country?: string;
   segmentFocus?: string;
   eventTypes?: string[];
+  styleVibe?: string[];
   clienteleProfile?: string;
+  services?: string[];
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+    metro?: string;
+  };
   serviceRadius?: string;
-  values?: string[];
-  socialProof?: string[];
+  values?: string[] | string;
+  socialProof?: string[] | string;
   fnbMinimumUSD?: number;
   revMinimumUSD?: number;
-  evidence?: string[];
+  bookingLink?: string;
+  people?: Contact[];
+  capacityNotes?: string;
+  portfolioLinks?: string[];
+  crawlRunId?: string;
+  ts?: string;
 }
 
 export interface Lead {
   domain: string;
   seedUrl: string;
-  vendorName?: string;
   vendorType?: string;
   vendorConfidence?: number;
-  company?: string;
+  vendorName?: string;
   email?: string;
-  phones?: string[];
+  phone?: string;
   contactPage?: string | null;
   rfpUrl?: string | null;
-  bookingLink?: string | null;
   services?: string[];
   styleVibe?: string[];
-  location?: string;
-  capacityNotes?: string;
-  socials?: Record<string, string>;
-  people?: Contact[];
-  metro?: string;
   city?: string;
   state?: string;
   country?: string;
+  metro?: string;
+  socials?: Record<string, string>;
+  evidence?: string[];
   segmentFocus?: string;
   eventTypes?: string[];
   clienteleProfile?: string;
+  capacityNotes?: string;
   serviceRadius?: string;
-  values?: string[];
-  socialProof?: string[];
+  values?: string[] | string;
+  socialProof?: string[] | string;
   fnbMinimumUSD?: number;
   revMinimumUSD?: number;
-  evidence?: string[];
+  bookingLink?: string;
+  people?: Contact[];
+  company?: string;
   crawlRunId: string;
   ts: string;
 }
@@ -132,7 +129,7 @@ export interface MessagePersona {
   styleVibe?: string[];
   clienteleProfile?: string;
   services?: string[];
-  capacity?: string; // ✅ add this line
+  capacity?: string;
   location?: string;
   serviceRadius?: string;
   values?: string[];
@@ -144,4 +141,3 @@ export interface MessagePersona {
   company?: string;
   bestHookIdeas: string[];
 }
-
