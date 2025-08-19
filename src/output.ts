@@ -1,16 +1,19 @@
 // File: src/output.ts
 import { Dataset } from 'crawlee';
-import { buildPersonaFromCtx } from './parsers/buildPersona';
 import type { DomainContext } from './types';
+import { buildPersonaFromCtx } from './parsers/buildPersona';
 
 export async function persistAndPush(domainCtx: DomainContext, cfg: any) {
-    const { domain, seedUrl, pagesVisited, signals, score, ...rest } = domainCtx;
+    const { domain, evidence, ...rest } = domainCtx;
+
+    const primaryEmail = domainCtx.bestEmail ?? domainCtx.people?.[0]?.email ?? null;
 
     const lead = {
         domain,
-        seedUrl,
+        seedUrl: domainCtx.seedUrl,
         company: domainCtx.company ?? null,
-        vendorName: domainCtx.vendorName ?? null,
+        aboutText: domainCtx.aboutText ?? null,
+        aboutSummary: domainCtx.aboutSummary ?? null,
         vendorType: domainCtx.vendorType ?? null,
         vendorConfidence: domainCtx.vendorConfidence ?? null,
         segmentFocus: domainCtx.segmentFocus ?? [],
@@ -18,21 +21,20 @@ export async function persistAndPush(domainCtx: DomainContext, cfg: any) {
         services: domainCtx.services ?? [],
         styleVibe: domainCtx.styleVibe ?? [],
         clienteleProfile: domainCtx.clienteleProfile ?? [],
+        portfolio: domainCtx.portfolio ?? null,
+        values: domainCtx.values ?? [],
+        socialProof: domainCtx.socialProof ?? null,
         capacity: domainCtx.capacity ?? null,
         fnbMinimumUSD: domainCtx.fnbMinimumUSD ?? null,
         revMinimumUSD: domainCtx.revMinimumUSD ?? null,
         restrictions: domainCtx.restrictions ?? [],
-        aboutText: domainCtx.aboutText ?? null,
-        aboutSummary: domainCtx.aboutSummary ?? null,
-        socialProof: domainCtx.socialProof ?? null,
-        values: domainCtx.values ?? [],
-        portfolio: domainCtx.portfolio ?? null,
-        contactPage: domainCtx.contactPage ?? null,
+        bookingLink: domainCtx.bookingLink ?? null,
         rfpUrl: domainCtx.rfpUrl ?? null,
         rfpOnly: domainCtx.rfpOnly ?? null,
-        bookingLink: domainCtx.bookingLink ?? null,
-        email: domainCtx.bestEmail ?? null,
+        email: primaryEmail,
         phones: domainCtx.phones ?? [],
+        contactPage: domainCtx.contactPage ?? null,
+        formOnly: domainCtx.formOnly ?? null,
         address: domainCtx.address ?? null,
         city: domainCtx.city ?? null,
         state: domainCtx.state ?? null,
