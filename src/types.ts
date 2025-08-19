@@ -10,24 +10,22 @@ export interface Contact {
 }
 
 export interface PageSignals {
-  url: string;
-  html?: string;
-  text?: string;
   emails?: string[];
   phones?: string[];
   contacts?: Contact[];
-  segmentFocus?: string;
-  eventTypes?: string[];
-  styleVibe?: string[];
-  services?: string[];
   city?: string;
   state?: string;
   country?: string;
   metro?: string;
+  segmentFocus?: string;
+  eventTypes?: string[];
+  styleVibe?: string[];
+  clienteleProfile?: string;
+  services?: string[];
   capacityNotes?: string;
   serviceRadius?: string;
-  values?: string[] | string;
   socialProof?: string[] | string;
+  values?: string[] | string;
   fnbMinimumUSD?: number;
   revMinimumUSD?: number;
   bookingLink?: string;
@@ -42,33 +40,26 @@ export interface DomainContext {
   pagesVisited: Set<string>;
   signals: PageSignals[];
   score: number;
-  stopReason?: string;
 
-  // Contact info
+  // Contacts
   contacts?: Contact[];
   bestContact?: Contact;
-  email?: string;
   phone?: string;
   contactPage?: string;
   rfpUrl?: string;
+  email?: string;
 
-  // Classification
+  // Metadata
   vendorType?: string;
   vendorConfidence?: number;
   vendorName?: string;
   company?: string;
 
-  // Personalization context
   segmentFocus?: string;
   eventTypes?: string[];
   styleVibe?: string[];
   clienteleProfile?: string;
   services?: string[];
-  capacityNotes?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  metro?: string;
   serviceRadius?: string;
   values?: string[] | string;
   socialProof?: string[] | string;
@@ -76,30 +67,46 @@ export interface DomainContext {
   revMinimumUSD?: number;
   bookingLink?: string;
   people?: Contact[];
+  capacityNotes?: string;
   portfolioLinks?: string[];
-
   crawlRunId?: string;
   ts?: string;
+
+  // Location
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+    metro?: string;
+  };
+
+  // Other
+  stopReason?: string;
 }
 
 export interface Lead {
   domain: string;
+  seedUrl: string;
   email?: string;
   phone?: string;
+  contactPage?: string;
+  rfpUrl?: string;
   vendorType?: string;
-  vendorConfidence?: number;
   vendorName?: string;
   company?: string;
-  services?: string[];
+  vendorConfidence?: number;
   segmentFocus?: string;
   eventTypes?: string[];
   styleVibe?: string[];
   clienteleProfile?: string;
+  services?: string[];
   capacityNotes?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  metro?: string;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+    metro?: string;
+  };
   serviceRadius?: string;
   values?: string[] | string;
   socialProof?: string[] | string;
@@ -108,8 +115,6 @@ export interface Lead {
   bookingLink?: string;
   people?: Contact[];
   portfolioLinks?: string[];
-  contactPage?: string;
-  rfpUrl?: string;
   crawlRunId?: string;
   ts?: string;
 }
@@ -131,4 +136,9 @@ export interface MessagePersona {
   people?: Contact[];
   company?: string;
   bestHookIdeas: string[];
+}
+
+export interface ActorInput {
+  startUrls: { url: string }[];
+  campaignMode?: 'wedding' | 'corporate' | 'mixed';
 }
