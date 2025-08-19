@@ -1,21 +1,40 @@
+// File: src/types.ts
+
 export type CampaignMode = 'wedding' | 'corporate' | 'mixed';
 
-export interface ActorInput {
-  startUrls: string[];
-  campaignMode?: CampaignMode;
-  includePaths?: string[];
-  maxDepth?: number;
-  maxRequestsPerDomain?: number;
-  perHostConcurrency?: number;
-  maxConcurrency?: number;
-  useGptFallback?: boolean;
-  takeScreenshots?: boolean;
-  saveHtmlSnippets?: boolean;
-  parseSmallPdfs?: boolean;
-  stopOnScore?: number; // 0..1
-  proxyConfiguration?: any;
+// Basic contact (for people or generic contacts)
+export interface Contact {
+  name?: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+  source?: string; // e.g., URL or evidence
 }
 
+// Location info normalized from address strings
+export interface Location {
+  city?: string;
+  state?: string;
+  country?: string;
+  metro?: string;
+  serviceRadius?: string;
+}
+
+// Vendor metadata
+export interface Vendor {
+  type?: string;              // e.g. venue, planner
+  confidence?: number;        // 0..1
+  name?: string;              // e.g. “Riverdale Events Co.”
+  segmentFocus?: string[];    // wedding, corporate, social
+  eventTypes?: string[];      // conference, gala, etc.
+  values?: string[];          // optional, e.g. women-owned
+  socialProof?: string[];     // awards, testimonials
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  bookingLink?: string;
+}
+
+// Snapshot of a single page’s scraped info
 export interface PageSignals {
   url: string;
   title?: string;
@@ -25,70 +44,52 @@ export interface PageSignals {
   contactUrl?: string | null;
 }
 
-export interface Contact {
-  name?: string;
-  role?: string;
-  email?: string;
-  phone?: string;
-  sourceUrl?: string;
-}
-
+// Canonical output format for Apify dataset
 export interface Lead {
   domain: string;
   seedUrl: string;
-  vendorType?: string;
-  vendorConfidence?: number;
-  contact?: Contact;
-  contacts?: Contact[];
-  email?: string;
-  phones?: string[];
-  contactPage?: string | null;
-  rfpUrl?: string | null;
+
+  vendor?: Vendor;
+  location?: Location;
+  contacts: Contact[];
+  people?: Contact[];
+
+  socials?: Record<string, string>;
   services?: string[];
   styleVibe?: string[];
-  city?: string;
-  state?: string;
-  country?: string;
-  metro?: string;
-  location?: {
-    city?: string;
-    state?: string;
-    country?: string;
-    metro?: string;
-  };
-  socials?: Record<string, string>;
+  capacityNotes?: string;
+  portfolio?: string[];
+
   evidence?: string[];
   crawlRunId: string;
   ts: string;
-  capacityNotes?: string[];
 }
 
+// In-memory, evolving context during crawl
 export interface DomainContext {
   domain: string;
   seedUrl: string;
+
   pagesVisited: Set<string>;
   signals: PageSignals[];
 
-  vendorType?: string;
-  vendorConfidence?: number;
-  score: number;
-  stopReason?: string;
-
-  contacts?: Contact[];
+  contacts: Contact[];
   bestContact?: Contact;
 
-  rfpUrl?: string | null;
+  vendor?: Vendor;
+  location?: Location;
+  people?: Contact[];
+
   services?: string[];
-  styleVibe?: string[];
-  capacityNotes?: string[];
-
-  location?: {
-    city?: string;
-    state?: string;
-    country?: string;
-    metro?: string;
-  };
-
   socials?: Record<string, string>;
+  styleVibe?: string[];
+  capacityNotes?: string;
+  portfolio?: string[];
+
   evidence?: string[];
+  crawlRunId?: string;
+  ts?: string;
+
+  score: number;         // 0..1
+  stopReason?: string;
 }
