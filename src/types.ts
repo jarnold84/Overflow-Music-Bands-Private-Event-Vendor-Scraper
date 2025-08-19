@@ -48,6 +48,7 @@ export interface DomainContext {
   contacts?: Contact[];
   bestContact?: Contact;
   email?: string;
+  phone?: string;
   contactPage?: string;
   rfpUrl?: string;
 
