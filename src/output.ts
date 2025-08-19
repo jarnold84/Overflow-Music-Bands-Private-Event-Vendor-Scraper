@@ -1,55 +1,31 @@
 // File: src/output.ts
 import { Dataset } from 'crawlee';
-import type { DomainContext } from './types';
-import { buildPersonaFromCtx } from './parsers/buildPersona';
+import type { DomainContext, Lead, MessagePersona } from './types.js';
+import { buildPersonaFromCtx } from './parsers/buildPersona.js';
 
-export async function persistAndPush(domainCtx: DomainContext, cfg: any) {
-    const { domain, evidence, ...rest } = domainCtx;
+export async function persistAndPush(ctx: DomainContext, cfg: any) {
+  const { vendorType, vendorConfidence, socials, services, styleVibe, location, crawlRunId, seedUrl, evidence, domain, ts, capacityNotes, contacts, bestContact } = ctx;
 
-    const primaryEmail = domainCtx.bestEmail ?? domainCtx.people?.[0]?.email ?? null;
+  const lead: Lead = {
+    domain,
+    seedUrl,
+    crawlRunId,
+    ts,
+    vendorType,
+    vendorConfidence,
+    email: bestContact?.email ?? contacts?.[0]?.email ?? null,
+    phones: bestContact?.phones ?? contacts?.[0]?.phones ?? [],
+    contactPage: bestContact?.contactPage ?? null,
+    rfpUrl: bestContact?.rfpUrl ?? null,
+    socials,
+    services,
+    styleVibe,
+    location,
+    capacityNotes,
+    evidence,
+  };
 
-    const lead = {
-        domain,
-        seedUrl: domainCtx.seedUrl,
-        company: domainCtx.company ?? null,
-        aboutText: domainCtx.aboutText ?? null,
-        aboutSummary: domainCtx.aboutSummary ?? null,
-        vendorType: domainCtx.vendorType ?? null,
-        vendorConfidence: domainCtx.vendorConfidence ?? null,
-        segmentFocus: domainCtx.segmentFocus ?? [],
-        eventTypes: domainCtx.eventTypes ?? [],
-        services: domainCtx.services ?? [],
-        styleVibe: domainCtx.styleVibe ?? [],
-        clienteleProfile: domainCtx.clienteleProfile ?? [],
-        portfolio: domainCtx.portfolio ?? null,
-        values: domainCtx.values ?? [],
-        socialProof: domainCtx.socialProof ?? null,
-        capacity: domainCtx.capacity ?? null,
-        fnbMinimumUSD: domainCtx.fnbMinimumUSD ?? null,
-        revMinimumUSD: domainCtx.revMinimumUSD ?? null,
-        restrictions: domainCtx.restrictions ?? [],
-        bookingLink: domainCtx.bookingLink ?? null,
-        rfpUrl: domainCtx.rfpUrl ?? null,
-        rfpOnly: domainCtx.rfpOnly ?? null,
-        email: primaryEmail,
-        phones: domainCtx.phones ?? [],
-        contactPage: domainCtx.contactPage ?? null,
-        formOnly: domainCtx.formOnly ?? null,
-        address: domainCtx.address ?? null,
-        city: domainCtx.city ?? null,
-        state: domainCtx.state ?? null,
-        country: domainCtx.country ?? null,
-        metro: domainCtx.metro ?? null,
-        serviceRadius: domainCtx.serviceRadius ?? null,
-        travelPolicy: domainCtx.travelPolicy ?? null,
-        socials: domainCtx.socials ?? {},
-        people: domainCtx.people ?? [],
-        evidence: domainCtx.evidence ?? [],
-        crawlRunId: cfg.runId ?? 'dev',
-        ts: new Date().toISOString(),
-    };
+  const persona: MessagePersona = buildPersonaFromCtx(ctx, lead);
 
-    const persona = buildPersonaFromCtx(domainCtx);
-
-    await Dataset.pushData({ lead, persona });
+  await Dataset.pushData({ lead, persona });
 }
