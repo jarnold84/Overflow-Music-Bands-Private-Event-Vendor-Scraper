@@ -1,33 +1,33 @@
 // File: src/stopRules.ts
+import type { DomainContext } from './types.js';
+import { chooseBestContact } from './parsers/contactChooser.js';
+import { classifyVendor } from './parsers/vendorClassifier.js';
 
-import type { DomainContext } from './types';
+export function recomputeScore(ctx: DomainContext, cfg: any) {
+  // Determine vendor type and confidence
+  const { vendorType, confidence } = classifyVendor(ctx.signals); // ✅ Fixed: Only pass signals
+  ctx.vendorType = vendorType;
+  ctx.vendorConfidence = confidence;
 
-export function recomputeScore(ctx: DomainContext, input: { stopOnScore?: number }) {
-    let score = 0;
+  // Choose best contact if available
+  if (ctx.contacts) {
+    const best = chooseBestContact(ctx.contacts);
+    if (best) ctx.bestContact = best;
+  }
 
-    if (ctx.bestEmail || ctx.rfpUrl || ctx.contactPage) score += 0.4;
+  // Assign score based on available context
+  let score = 0;
 
-    if (ctx.vendorType) score += 0.2;
+  if (ctx.bestContact?.email || ctx.rfpUrl) score += 0.4;
+  if (vendorType && confidence > 0.6) score += 0.3;
+  if (ctx.services?.length) score += 0.1;
+  if (ctx.location?.city || ctx.location?.state) score += 0.1;
+  if (ctx.styleVibe?.length || ctx.capacityNotes?.length) score += 0.1;
 
-    if (ctx.segmentFocus?.length || ctx.services?.length) score += 0.15;
-
-    if (ctx.city && ctx.state) score += 0.1;
-
-    if (ctx.styleVibe?.length || ctx.capacity) score += 0.1;
-
-    if (ctx.socials && Object.keys(ctx.socials).length > 0) score += 0.05;
-
-    // Cap score at 1
-    ctx.score = Math.min(score, 1);
-
-    // Store stop reason if over threshold
-    const threshold = input.stopOnScore ?? 0.75;
-    if (ctx.score >= threshold) {
-        ctx.stopReason = `Reached score threshold: ${ctx.score.toFixed(2)}`;
-    }
+  ctx.score = Math.min(score, 1);
 }
 
-export function shouldStop(ctx: DomainContext, input: { stopOnScore?: number }): boolean {
-    const threshold = input.stopOnScore ?? 0.75;
-    return ctx.score >= threshold;
+export function shouldStop(ctx: DomainContext, cfg: any): boolean {
+  const threshold = cfg?.stopOnScore ?? 0.75;
+  return ctx.score >= threshold;
 }
