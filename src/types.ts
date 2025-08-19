@@ -9,26 +9,74 @@ export interface Contact {
   rfpUrl?: string;
 }
 
+export interface PageSnapshot {
+  url: string;
+  html: string;
+  text: string;
+}
+
 export interface PageSignals {
+  url?: string;
+  title?: string;
+  emails?: string[];
+  phones?: string[];
   contacts?: Contact[];
+  vendorType?: string;
+  vendorTypeHints?: string[];
+  services?: string[];
+  segmentFocus?: string;
+  eventTypes?: string[];
+  styleVibe?: string[];
+  capacityNotes?: string;
   city?: string;
   state?: string;
   country?: string;
   metro?: string;
-  segmentFocus?: string;
-  eventTypes?: string[];
-  services?: string[];
-  styleVibe?: string[];
-  capacityNotes?: string;
   serviceRadius?: string;
-  socialProof?: string[] | string;
   values?: string[] | string;
+  socialProof?: string[] | string;
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
   bookingLink?: string;
   people?: Contact[];
   vendorName?: string;
-  phoneCandidates?: string[];
-  contactUrl?: string;
   portfolioLinks?: string[];
+  text?: string; // ✅ NEW — for classifier scoring
+}
+
+export interface Lead {
+  domain: string;
+  seedUrl: string;
+  vendorName?: string;
+  vendorType?: string;
+  vendorConfidence?: number;
+  email?: string;
+  phone?: string;
+  contactPage?: string;
+  rfpUrl?: string;
+  services?: string[];
+  segmentFocus?: string;
+  eventTypes?: string[];
+  styleVibe?: string[];
+  clienteleProfile?: string;
+  capacityNotes?: string;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+    metro?: string;
+  };
+  serviceRadius?: string;
+  values?: string[] | string;
+  socialProof?: string[] | string;
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  bookingLink?: string;
+  people?: Contact[];
+  portfolioLinks?: string[];
+  crawlRunId?: string;
+  ts?: string;
+  company?: string;
 }
 
 export interface DomainContext {
@@ -36,13 +84,15 @@ export interface DomainContext {
   seedUrl: string;
   pagesVisited: Set<string>;
   signals: PageSignals[];
-  bestContact?: Contact;
-  contacts?: Contact[];
+  score: number;
+  stopReason?: string;
+
   vendorType?: string;
   vendorConfidence?: number;
   vendorName?: string;
-  score: number;
-  stopReason?: string;
+
+  contacts?: Contact[];
+  bestContact?: Contact;
   email?: string;
   phone?: string;
   contactPage?: string;
@@ -71,38 +121,7 @@ export interface DomainContext {
   portfolioLinks?: string[];
   crawlRunId?: string;
   ts?: string;
-}
-
-export interface Lead {
-  domain: string;
-  vendorType?: string;
-  vendorName?: string;
-  email?: string;
-  phone?: string;
-  contactPage?: string;
-  rfpUrl?: string;
-  segmentFocus?: string;
-  eventTypes?: string[];
-  styleVibe?: string[];
-  clienteleProfile?: string;
-  services?: string[];
-  capacityNotes?: string;
-  location?: {
-    metro?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-  };
-  serviceRadius?: string;
-  values?: string[] | string;
-  socialProof?: string[] | string;
-  fnbMinimumUSD?: number;
-  revMinimumUSD?: number;
-  bookingLink?: string;
-  people?: Contact[];
-  company?: string;
-  crawlRunId?: string;
-  ts?: string;
+  text?: string; // propagated for scoring if needed
 }
 
 export interface MessagePersona {
