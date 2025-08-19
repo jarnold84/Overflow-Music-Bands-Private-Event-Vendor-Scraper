@@ -4,25 +4,34 @@ import { buildSnapshot } from './utils/snapshot';
 import { getContext } from './domainContext';
 import { runExtractors } from './extractors/runExtractors';
 import { recomputeScore, shouldStop } from './stopRules';
+import { discoverLinks } from './utils/url'; // Adjust if using `selectors.ts`
 import { persistAndPush } from './output';
-import { discoverLinks } from './utils/url';
+import { Actor } from 'apify';
 import type { ActorInput } from './types';
 
 export const router = createRouteHandler<ActorInput>();
 
 router.addDefaultHandler(async (ctx) => {
     const { request, page, log, input } = ctx;
+    const url = request.url;
 
-    log.info(`Visiting: ${request.url}`);
-    const snapshot = await buildSnapshot(page, request.url);
-    const domainCtx = getContext(request.url);
+    log.info(`Visiting: ${url}`);
+    const domainCtx = getContext(url);
 
+    // Skip duplicate visits
+    if (domainCtx.pagesVisited.has(url)) {
+        log.info(`Skipping already visited URL: ${url}`);
+        return;
+    }
+    domainCtx.pagesVisited.add(url);
+
+    const snapshot = await buildSnapshot(page, url);
     await runExtractors(snapshot, domainCtx, input.campaignMode ?? 'mixed');
     recomputeScore(domainCtx, input);
 
     if (shouldStop(domainCtx, input)) {
-        log.info(`[STOP] ${domainCtx.domain} - Score ${domainCtx.score.toFixed(2)} (${domainCtx.stopReason || 'threshold met'})`);
-        await persistAndPush(domainCtx, input);
+        const runId = Actor.config.get('actorRunId') ?? 'dev';
+        await persistAndPush(domainCtx, { ...input, runId });
         return;
     }
 
