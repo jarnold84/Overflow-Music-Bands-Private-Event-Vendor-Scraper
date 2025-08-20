@@ -1,4 +1,4 @@
-import { BLOCKED_DOMAINS, BLOCKED_PATH_SNIPPETS } from '../constants.js';
+import { BLOCKED_DOMAINS, BLOCKED_PATH_SNIPPETS } from '../constants';
 
 export function getHostname(u: string): string {
   try { return new URL(u).hostname.replace(/^www\./,''); } catch { return u; }
