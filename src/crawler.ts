@@ -1,6 +1,5 @@
 // File: src/crawler.ts
 import { PlaywrightCrawler, log } from 'crawlee';
-import type { ActorInput } from './types';
 import { router } from './router';
 
 export function createCrawler(input: ActorInput) {
