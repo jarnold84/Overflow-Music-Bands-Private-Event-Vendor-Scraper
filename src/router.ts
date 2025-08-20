@@ -1,5 +1,5 @@
 // File: src/router.ts
-import { createRouteHandler } from 'crawlee';
+import { Router } from 'crawlee';
 import { buildSnapshot } from './utils/snapshot';
 import { getContext } from './domainContext';
 import { runExtractors } from './extractors/runExtractors';
