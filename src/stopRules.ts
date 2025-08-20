@@ -44,3 +44,6 @@ export function recomputeScore(ctx: DomainContext, cfg: any) {
 
   ctx.score = Math.min(score, 1);
 }
+
+// ✅ Export alias for convenience
+export const stopRulesMet = shouldStop;
