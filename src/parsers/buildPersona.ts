@@ -1,5 +1,5 @@
 // File: src/parsers/buildPersona.ts
-import type { Lead, MessagePersona } from '../types.js';
+import type { Lead, MessagePersona } from '../types';
 
 /**
  * Builds a compact persona summary from a scraped Lead.
