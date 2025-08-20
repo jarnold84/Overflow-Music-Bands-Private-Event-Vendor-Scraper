@@ -1,6 +1,6 @@
 // File: src/extractors/vendorClassifier.ts
 
-import type { PageSnapshot, PageSignals } from '../types.js';
+import type { PageSnapshot, PageSignals } from '../types';
 
 /**
  * Extracts vendor-related classification hints from page text.
