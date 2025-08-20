@@ -1,5 +1,29 @@
 // File: src/types.ts
 
+export type ActorInput = {
+  startUrls: string[];
+  mode: 'wedding' | 'corporate';
+};
+
+export type Lead = {
+  vendor?: {
+    name?: string;
+    typeHints?: string[];
+  };
+  services?: string[];
+  styleVibe?: string[];
+  location?: string;
+  socials?: string[];
+  contacts?: {
+    email?: string;
+    phone?: string;
+  }[];
+  bestContact?: {
+    email?: string;
+    phone?: string;
+  };
+};
+
 export interface Contact {
   name?: string;
   role?: string;
