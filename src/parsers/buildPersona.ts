@@ -6,28 +6,22 @@ import type { Lead, MessagePersona } from '../types';
  * This is used to feed GPT message generation.
  */
 
-export function buildPersonaFromLead(lead: Lead): MessagePersona {
-  return {
-    segmentFocus: lead.segmentFocus ?? 'unknown',
-    eventTypes: lead.eventTypes ?? [],
-    styleVibe: lead.styleVibe ?? [],
-    clienteleProfile: lead.clienteleProfile ?? 'not specified',
-    services: lead.services ?? [],
-    capacity: lead.capacityNotes ?? 'not specified',
-    location: [
-      lead.location?.metro,
-      lead.location?.city,
-      lead.location?.state,
-      lead.location?.country,
-    ].filter(Boolean).join(', '),
-    serviceRadius: lead.serviceRadius ?? 'N/A',
-    values: Array.isArray(lead.values) ? lead.values : [lead.values].filter(Boolean),
-    socialProof: Array.isArray(lead.socialProof) ? lead.socialProof : [lead.socialProof].filter(Boolean),
-    fnbMinimumUSD: lead.fnbMinimumUSD ?? null,
-    revMinimumUSD: lead.revMinimumUSD ?? null,
-    bookingLink: lead.bookingLink ?? null,
-    people: lead.people ?? [],
-    company: lead.company ?? lead.vendorName ?? lead.domain,
-    bestHookIdeas: [],
-  };
+export function buildMessagePersona(lead: Lead): MessagePersona {
+return {
+vendorType: lead.vendor?.type || 'vendor',
+name: lead.vendor?.name || '',
+location: ([
+lead.location?.metro,
+lead.location?.city,
+lead.location?.state,
+lead.location?.country,
+].filter(Boolean) as string[]).join(', '),
+styleVibe: lead.styleVibe?.join(', ') || '',
+values: Array.isArray(lead.values)
+? (lead.values.filter(Boolean) as string[])
+: [lead.values].filter(Boolean) as string[],
+socialProof: Array.isArray(lead.socialProof)
+? (lead.socialProof.filter(Boolean) as string[])
+: [lead.socialProof].filter(Boolean) as string[],
+};
 }
