@@ -1,4 +1,4 @@
-// File: src/types.ts
+// File: src/utils/types.ts
 
 export type ActorInput = {
   startUrls: string[];
@@ -22,6 +22,25 @@ export type Lead = {
     email?: string;
     phone?: string;
   };
+  segmentFocus?: string;
+  eventTypes?: string[];
+  clienteleProfile?: string;
+  capacityNotes?: string;
+  serviceRadius?: string;
+  values?: string[];
+  socialProof?: string[];
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  bookingLink?: string;
+  people?: Contact[];
+  vendorName?: string;
+  vendorType?: string;
+  vendorConfidence?: number;
+  email?: string;
+  phone?: string;
+  contactPage?: string;
+  rfpUrl?: string;
+  company?: string;
 };
 
 export interface Contact {
@@ -57,50 +76,15 @@ export interface PageSignals {
   country?: string;
   metro?: string;
   serviceRadius?: string;
-  values?: string[] | string;
-  socialProof?: string[] | string;
+  values?: string[];
+  socialProof?: string[];
   fnbMinimumUSD?: number;
   revMinimumUSD?: number;
   bookingLink?: string;
   people?: Contact[];
   vendorName?: string;
   portfolioLinks?: string[];
-  text?: string; // ✅ NEW — for classifier scoring
-}
-
-export interface Lead {
-  domain: string;
-  seedUrl: string;
-  vendorName?: string;
-  vendorType?: string;
-  vendorConfidence?: number;
-  email?: string;
-  phone?: string;
-  contactPage?: string;
-  rfpUrl?: string;
-  services?: string[];
-  segmentFocus?: string;
-  eventTypes?: string[];
-  styleVibe?: string[];
-  clienteleProfile?: string;
-  capacityNotes?: string;
-  location?: {
-    city?: string;
-    state?: string;
-    country?: string;
-    metro?: string;
-  };
-  serviceRadius?: string;
-  values?: string[] | string;
-  socialProof?: string[] | string;
-  fnbMinimumUSD?: number;
-  revMinimumUSD?: number;
-  bookingLink?: string;
-  people?: Contact[];
-  portfolioLinks?: string[];
-  crawlRunId?: string;
-  ts?: string;
-  company?: string;
+  text?: string; // ✅ for classifier scoring
 }
 
 export interface DomainContext {
@@ -135,8 +119,8 @@ export interface DomainContext {
     metro?: string;
   };
   serviceRadius?: string;
-  values?: string[] | string;
-  socialProof?: string[] | string;
+  values?: string[];
+  socialProof?: string[];
   fnbMinimumUSD?: number;
   revMinimumUSD?: number;
   bookingLink?: string;
@@ -145,7 +129,7 @@ export interface DomainContext {
   portfolioLinks?: string[];
   crawlRunId?: string;
   ts?: string;
-  text?: string; // propagated for scoring if needed
+  text?: string; // for classifier scoring
 }
 
 export interface MessagePersona {
