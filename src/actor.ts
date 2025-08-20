@@ -2,10 +2,12 @@
 
 import { Actor } from 'apify';
 import { createCrawler } from './crawler';
+import type { ActorInput } from './utils/types';
 
 await Actor.init();
 
-const input = await Actor.getInput();
+const input = await Actor.getInput() as ActorInput;
+
 if (!input || !input.startUrls?.length || !input.mode) {
     throw new Error('Missing startUrls or mode');
 }
