@@ -1,8 +1,16 @@
+# Use Apify base image with Playwright support
 FROM apify/actor-node-playwright-chrome:22-1.54.1
 
-COPY . ./
+# Copy only the required files
+COPY src/ src/
+COPY package.json ./
+COPY tsconfig.json ./
 
+# Install dependencies
 RUN npm install
+
+# Compile TypeScript to JavaScript
 RUN npm run build
 
+# Run the built actor
 CMD ["npm", "start"]
