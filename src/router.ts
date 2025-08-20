@@ -5,19 +5,17 @@ import { buildSnapshot } from './utils/snapshot';
 import { runExtractors } from './extractors/runExtractors';
 import { persistAndPush } from './output';
 import { stopRulesMet } from './stopRules';
-import type { DomainContext } from './utils/types';
+import type { DomainContext, CampaignMode } from './utils/types';
 
-// ✅ Use correct instantiation for Crawlee Router
 export const router = Router.create();
 
 const domainContexts = new Map<string, DomainContext>();
 
-router.addDefaultHandler(async (ctx) => {
+export async function router(ctx: any, mode: CampaignMode) {
   const { request, page } = ctx;
   const url = request.url;
   const domain = new URL(url).hostname;
 
-  // Create domain context if not already present
   if (!domainContexts.has(domain)) {
     domainContexts.set(domain, {
       domain,
@@ -30,7 +28,6 @@ router.addDefaultHandler(async (ctx) => {
 
   const context = domainContexts.get(domain)!;
 
-  // Skip if we've already seen this page
   if (context.pagesVisited.has(url)) {
     log.info(`Already visited: ${url}`);
     return;
@@ -38,12 +35,10 @@ router.addDefaultHandler(async (ctx) => {
 
   context.pagesVisited.add(url);
 
-  // 🧠 Extract data from page
   const snapshot = await buildSnapshot(page, url);
-  await runExtractors(snapshot, context, 'wedding'); // 🔁 Mode should be parameterized later
+  await runExtractors(snapshot, context, mode); // ⬅️ Dynamic mode
 
-  // 🛑 Check if stop conditions are met
   if (stopRulesMet(context)) {
-    await persistAndPush(context, {}); // 👈 Pass dummy config if needed
+    await persistAndPush(context, {});
   }
-});
+}
