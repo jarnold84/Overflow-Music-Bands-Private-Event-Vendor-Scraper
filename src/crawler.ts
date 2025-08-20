@@ -2,7 +2,7 @@
 import { PlaywrightCrawler, log } from 'crawlee';
 import { router } from './router';
 
-export function createCrawler(input: ActorInput) {
+export function createCrawler(input: any) {
     return new PlaywrightCrawler({
         requestHandler: async (ctx) => {
             log.info(`Handling ${ctx.request.url}`);
