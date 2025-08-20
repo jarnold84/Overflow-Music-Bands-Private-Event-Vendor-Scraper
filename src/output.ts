@@ -1,8 +1,8 @@
 // File: src/output.ts
-import { ActorInput } from './types.js';
+import { ActorInput } from './types';
 import { createDataset } from 'crawlee';
-import { buildPersonaFromLead } from './parsers/buildPersona.js';
-import type { DomainContext } from './types.js';
+import { buildPersonaFromLead } from './parsers/buildPersona';
+import type { DomainContext } from './types';
 
 /**
  * Persists the final lead + messagePersona into the dataset.
