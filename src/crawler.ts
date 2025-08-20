@@ -10,7 +10,6 @@ export function createCrawler(input: ActorInput) {
             await router(ctx, input);
         },
         headless: true,
-        useChrome: true,
         maxConcurrency: input.maxConcurrency ?? 10,
         proxyConfiguration: input.proxyConfiguration,
         preNavigationHooks: [
