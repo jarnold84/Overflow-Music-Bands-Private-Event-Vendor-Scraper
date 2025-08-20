@@ -1,7 +1,11 @@
 // File: src/stopRules.ts
-import type { DomainContext } from './types';
+
+import type { DomainContext } from './utils/types';
 import { classifyVendor } from './parsers/vendorClassifier';
 
+/**
+ * Decide if we've scraped enough info to stop.
+ */
 export function shouldStop(ctx: DomainContext, cfg: any): boolean {
   const hasContact = !!ctx.bestContact?.email || !!ctx.bestContact?.contactPage || !!ctx.bestContact?.rfpUrl;
   const hasVendor = !!ctx.vendorType && (ctx.vendorConfidence ?? 0) > 0.6;
@@ -14,18 +18,25 @@ export function shouldStop(ctx: DomainContext, cfg: any): boolean {
   return false;
 }
 
+/**
+ * Recalculate score and infer vendor type from all signals.
+ */
 export function recomputeScore(ctx: DomainContext, cfg: any) {
-  // Determine vendor type and confidence from extracted signal text
-  const { vendorType, confidence } = classifyVendor(
-    ctx.signals.map((s) => s.text ?? '')
-  );
-  ctx.vendorType = vendorType;
-  ctx.vendorConfidence = confidence;
+  // Use last available full signal text for classification
+  const lastText = [...ctx.signals]
+    .reverse()
+    .find((s) => s.text)?.text;
 
-  // Basic scoring heuristic
+  if (lastText) {
+    const { vendorType, confidence } = classifyVendor({ url: ctx.seedUrl, html: '', title: '', text: lastText });
+    ctx.vendorType = vendorType;
+    ctx.vendorConfidence = confidence;
+  }
+
+  // Score based on field completeness
   let score = 0;
   if (ctx.bestContact?.email) score += 0.4;
-  if (vendorType && confidence > 0.6) score += 0.2;
+  if (ctx.vendorType && ctx.vendorConfidence && ctx.vendorConfidence > 0.6) score += 0.2;
   if (ctx.segmentFocus) score += 0.1;
   if (ctx.services) score += 0.1;
   if (ctx.capacityNotes || ctx.location) score += 0.1;
