@@ -26,17 +26,19 @@ export async function runExtractors(
   const emails = extractEmails(text);
   const phones = extractPhones(text);
 
-  ctx.contacts = emails.map((email) => ({ email }));
-  ctx.contacts.forEach((c, i) => {
-    if (phones[i]) c.phone = phones[i];
-  });
+  // Combine emails and phones into contacts intelligently
+  const contactCount = Math.max(emails.length, phones.length);
+  ctx.contacts = Array.from({ length: contactCount }).map((_, i) => ({
+    email: emails[i],
+    phone: phones[i],
+  })).filter(c => c.email || c.phone); // remove empty rows
 
   ctx.bestContact = chooseBestContact(ctx.contacts);
 
-  // Vendor classification (integrated snapshot-based version)
+  // Vendor classification
   const vendorSignals = classifyVendor(snapshot);
   ctx.vendorType = vendorSignals.vendorTypeHints?.[0] ?? undefined;
-  ctx.vendorConfidence = vendorSignals.vendorTypeHints?.length ? 0.9 : 0.5; // Placeholder confidence
+  ctx.vendorConfidence = vendorSignals.vendorTypeHints?.length ? 0.9 : 0.5; // placeholder confidence
   ctx.vendorName = extractVendorName(html);
 
   // Services & style
