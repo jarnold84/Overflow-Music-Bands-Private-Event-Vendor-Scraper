@@ -1,13 +1,14 @@
 // File: src/crawler.ts
+
 import { PlaywrightCrawler, log } from 'crawlee';
-import { router } from './router';
+import { routerHandler } from './router'; // ✅ updated import
 import type { ActorInput } from './utils/types';
 
 export function createCrawler(input: ActorInput) {
     return new PlaywrightCrawler({
         requestHandler: async (ctx) => {
             log.info(`Handling ${ctx.request.url}`);
-            await router(ctx, input.mode); // ⬅️ Pass mode to router
+            await routerHandler(ctx, input.mode); // ✅ updated call
         },
         headless: true,
         maxConcurrency: input.maxConcurrency ?? 10,
