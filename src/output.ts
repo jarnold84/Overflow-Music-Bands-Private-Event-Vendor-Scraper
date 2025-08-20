@@ -1,7 +1,7 @@
 // File: src/output.ts
 import { Dataset } from 'crawlee';
 import { buildMessagePersona } from './parsers/buildPersona';
-import type { DomainContext } from './types';
+import type { DomainContext } from './utils/types';
 
 /**
  * Persists the final lead + messagePersona into the dataset.
