@@ -3,11 +3,11 @@ import { PlaywrightCrawler, log } from 'crawlee';
 import { router } from './router';
 import type { ActorInput } from './utils/types';
 
-export function createCrawler(input: any) {
+export function createCrawler(input: ActorInput) {
     return new PlaywrightCrawler({
         requestHandler: async (ctx) => {
             log.info(`Handling ${ctx.request.url}`);
-            await router(ctx, input);
+            await router(ctx, input.mode); // ⬅️ Pass mode to router
         },
         headless: true,
         maxConcurrency: input.maxConcurrency ?? 10,
