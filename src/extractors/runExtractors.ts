@@ -35,10 +35,11 @@ export async function runExtractors(
 
   ctx.bestContact = chooseBestContact(ctx.contacts);
 
-  // Vendor classification
+  // Vendor classification — FIXED: use vendorType + confidence directly
   const vendorSignals = classifyVendor(snapshot);
-  ctx.vendorType = vendorSignals.vendorTypeHints?.[0] ?? undefined;
-  ctx.vendorConfidence = vendorSignals.vendorTypeHints?.length ? 0.9 : 0.5; // placeholder confidence
+  ctx.vendorType = vendorSignals.vendorType;
+  ctx.vendorConfidence = vendorSignals.confidence ?? 0.5;
+
   ctx.vendorName = extractVendorName(html);
 
   // Services & style
