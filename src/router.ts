@@ -7,7 +7,8 @@ import { persistAndPush } from './output';
 import { stopRulesMet } from './stopRules';
 import type { DomainContext } from './utils/types';
 
-export const router = new Router();
+// ✅ Use correct instantiation for Crawlee Router
+export const router = Router.create();
 
 const domainContexts = new Map<string, DomainContext>();
 
@@ -16,6 +17,7 @@ router.addDefaultHandler(async (ctx) => {
   const url = request.url;
   const domain = new URL(url).hostname;
 
+  // Create domain context if not already present
   if (!domainContexts.has(domain)) {
     domainContexts.set(domain, {
       domain,
@@ -27,6 +29,8 @@ router.addDefaultHandler(async (ctx) => {
   }
 
   const context = domainContexts.get(domain)!;
+
+  // Skip if we've already seen this page
   if (context.pagesVisited.has(url)) {
     log.info(`Already visited: ${url}`);
     return;
@@ -34,10 +38,12 @@ router.addDefaultHandler(async (ctx) => {
 
   context.pagesVisited.add(url);
 
+  // 🧠 Extract data from page
   const snapshot = await buildSnapshot(page, url);
-  await runExtractors(snapshot, context, 'wedding'); // 🔁 Consider parameterizing mode later
+  await runExtractors(snapshot, context, 'wedding'); // 🔁 Mode should be parameterized later
 
+  // 🛑 Check if stop conditions are met
   if (stopRulesMet(context)) {
-    await persistAndPush(context, {}); // Dummy input object if needed by downstream calls
+    await persistAndPush(context, {}); // 👈 Pass dummy config if needed
   }
 });
