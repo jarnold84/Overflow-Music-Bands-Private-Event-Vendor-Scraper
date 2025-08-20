@@ -1,10 +1,11 @@
 // File: src/router.ts
+
 import { Dataset, log, Router } from 'crawlee';
 import { buildSnapshot } from './utils/snapshot';
 import { runExtractors } from './extractors/runExtractors';
 import { persistAndPush } from './output';
 import { stopRulesMet } from './stopRules';
-import type { DomainContext } from './types';
+import type { DomainContext } from './utils/types';
 
 export const router = new Router();
 
@@ -34,9 +35,9 @@ router.addDefaultHandler(async (ctx) => {
   context.pagesVisited.add(url);
 
   const snapshot = await buildSnapshot(page, url);
-  await runExtractors(snapshot, context, 'wedding'); // or 'corporate' — consider parameterizing
+  await runExtractors(snapshot, context, 'wedding'); // 🔁 Consider parameterizing mode later
 
   if (stopRulesMet(context)) {
-    await persistAndPush(context, {});
+    await persistAndPush(context, {}); // Dummy input object if needed by downstream calls
   }
 });
