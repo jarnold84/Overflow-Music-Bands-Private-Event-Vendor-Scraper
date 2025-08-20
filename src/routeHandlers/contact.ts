@@ -1,13 +1,20 @@
-// File: src/routerHandlers/contact.ts
+// File: src/routeHandlers/contact.ts
 
 import { buildSnapshot } from '../utils/snapshot';
 import { runExtractors } from '../extractors/runExtractors';
-import type { DomainContext, CampaignMode } from '../utils/types';
-import { stopRulesMet } from '../stopRules';
 import { persistAndPush } from '../output';
+import { stopRulesMet } from '../stopRules';
+import type { DomainContext, CampaignMode } from '../utils/types';
 
-export async function handle[RouteName](ctx: any, context: DomainContext, mode: CampaignMode) {
-  const snapshot = await buildSnapshot(ctx.page, ctx.request.url);
+export async function handleContact(
+  ctx: any,
+  context: DomainContext,
+  mode: CampaignMode
+): Promise<void> {
+  const { page, request } = ctx;
+  const url = request.url;
+
+  const snapshot = await buildSnapshot(page, url);
   await runExtractors(snapshot, context, mode);
 
   if (stopRulesMet(context)) {
