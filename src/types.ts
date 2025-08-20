@@ -65,7 +65,6 @@ export interface PageSignals {
   phones?: string[];
   contacts?: Contact[];
   vendorType?: string;
-  vendorTypeHints?: string[];
   services?: string[];
   segmentFocus?: string;
   eventTypes?: string[];
