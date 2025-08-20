@@ -1,6 +1,6 @@
 // File: src/output.ts
 import { ActorInput } from './types';
-import { createDataset } from 'crawlee';
+import { Dataset } from 'crawlee';
 import { buildPersonaFromLead } from './parsers/buildPersona';
 import type { DomainContext } from './types';
 
