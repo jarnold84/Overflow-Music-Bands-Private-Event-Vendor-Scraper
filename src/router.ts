@@ -1,28 +1,17 @@
 // File: src/router.ts
 
 import { log, Router } from 'crawlee';
-import { buildSnapshot } from './utils/snapshot';
-import { runExtractors } from './extractors/runExtractors';
-import { persistAndPush } from './output';
-import { stopRulesMet } from './stopRules';
+import { handleAbout } from './routeHandlers/about';
+import { handleContact } from './routeHandlers/contact';
+import { handleServices } from './routeHandlers/services';
+import { handleDefault } from './routeHandlers/default';
 import type { DomainContext, CampaignMode } from './utils/types';
 
-// Create a Router (you still need to pass mode from crawler.ts)
+// Create a Router (still need to pass mode from crawler.ts)
 export const router = Router.create();
 
 const domainContexts = new Map<string, DomainContext>();
 
-// Shared logic for each route
-async function handleRoute(ctx: any, context: DomainContext, mode: CampaignMode) {
-  const snapshot = await buildSnapshot(ctx.page, ctx.request.url);
-  await runExtractors(snapshot, context, mode);
-
-  if (stopRulesMet(context)) {
-    await persistAndPush(context, {});
-  }
-}
-
-// Main export — this replaces router.addDefaultHandler()
 export async function routerHandler(ctx: any, mode: CampaignMode) {
   const { request } = ctx;
   const url = request.url;
@@ -53,15 +42,15 @@ export async function routerHandler(ctx: any, mode: CampaignMode) {
 
   if (/about/.test(pathname)) {
     log.info(`🔎 Routing to ABOUT handler: ${url}`);
-    await handleRoute(ctx, context, mode);
+    await handleAbout(ctx, context, mode);
   } else if (/contact|connect|get-in-touch|reach/.test(pathname)) {
     log.info(`📞 Routing to CONTACT handler: ${url}`);
-    await handleRoute(ctx, context, mode);
+    await handleContact(ctx, context, mode);
   } else if (/services|offerings|what-we-do/.test(pathname)) {
     log.info(`🛠️ Routing to SERVICES handler: ${url}`);
-    await handleRoute(ctx, context, mode);
+    await handleServices(ctx, context, mode);
   } else {
     log.info(`📄 Routing to DEFAULT handler: ${url}`);
-    await handleRoute(ctx, context, mode);
+    await handleDefault(ctx, context, mode);
   }
 }
