@@ -46,7 +46,7 @@ export async function persistAndPush(ctx: DomainContext, input: ActorInput) {
     ts: ctx.ts ?? new Date().toISOString(),
   };
 
-  const messagePersona = buildPersonaFromLead(lead);
+  const messagePersona = buildMessagePersona(lead);
 
   await dataset.pushData({ lead, messagePersona });
 }
