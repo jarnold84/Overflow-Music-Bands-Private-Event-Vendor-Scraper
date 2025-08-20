@@ -8,7 +8,7 @@ import type { DomainContext } from './types';
  * 
  * This runs when stopRules.ts determines we're done with this domain.
  */
-export async function persistAndPush(ctx: DomainContext, input: ActorInput) {
+export async function persistAndPush(ctx: DomainContext, input: any) {
   const dataset = await Dataset.open();
 
   // Build flat lead structure from context
