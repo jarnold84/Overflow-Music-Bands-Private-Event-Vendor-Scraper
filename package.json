@@ -6,10 +6,6 @@
     "start": "node dist/actor",
     "build": "tsc -p ."
   },
-  "dependencies": {
-    "apify": "^3.1.2",
-    "crawlee": "^3.9.2"
-  },
 "dependencies": {
   "typescript": "^5.4.5",
   "apify": "^3.4.4",
