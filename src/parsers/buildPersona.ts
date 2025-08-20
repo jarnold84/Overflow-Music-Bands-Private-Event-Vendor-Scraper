@@ -1,27 +1,32 @@
 // File: src/parsers/buildPersona.ts
-import type { Lead, MessagePersona } from '../types';
 
-/**
- * Builds a compact persona summary from a scraped Lead.
- * This is used to feed GPT message generation.
- */
+import type { Lead, MessagePersona } from '../utils/types';
 
 export function buildMessagePersona(lead: Lead): MessagePersona {
-return {
-vendorType: lead.vendor?.type || 'vendor',
-name: lead.vendor?.name || '',
-location: ([
-lead.location?.metro,
-lead.location?.city,
-lead.location?.state,
-lead.location?.country,
-].filter(Boolean) as string[]).join(', '),
-styleVibe: lead.styleVibe?.join(', ') || '',
-values: Array.isArray(lead.values)
-? (lead.values.filter(Boolean) as string[])
-: [lead.values].filter(Boolean) as string[],
-socialProof: Array.isArray(lead.socialProof)
-? (lead.socialProof.filter(Boolean) as string[])
-: [lead.socialProof].filter(Boolean) as string[],
-};
+  return {
+    segmentFocus: lead.segmentFocus,
+    eventTypes: lead.eventTypes ?? [],
+    styleVibe: lead.styleVibe ?? [],
+    clienteleProfile: lead.clienteleProfile,
+    services: lead.services ?? [],
+    capacity: lead.capacityNotes,
+    location: lead.location ?? undefined,
+    serviceRadius: lead.serviceRadius,
+    values: Array.isArray(lead.values)
+      ? lead.values
+      : lead.values
+      ? [lead.values]
+      : [],
+    socialProof: Array.isArray(lead.socialProof)
+      ? lead.socialProof
+      : lead.socialProof
+      ? [lead.socialProof]
+      : [],
+    fnbMinimumUSD: lead.fnbMinimumUSD ?? null,
+    revMinimumUSD: lead.revMinimumUSD ?? null,
+    bookingLink: lead.bookingLink ?? null,
+    people: lead.people ?? [],
+    company: lead.company,
+    bestHookIdeas: [], // To be populated later by scoring
+  };
 }
