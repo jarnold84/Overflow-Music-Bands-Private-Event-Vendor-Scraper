@@ -1,6 +1,8 @@
 // File: src/domainContext.ts
-import type { DomainContext, PageSignals } from './types';
+
+import type { DomainContext, PageSignals } from './utils/types';
 import { getHostname } from './utils/url';
+import { normalizeLocation } from './parsers/locationNorm';
 
 const contexts = new Map<string, DomainContext>();
 
@@ -59,5 +61,10 @@ export function addSignals(ctx: DomainContext, sig: PageSignals) {
     ctx.bookingLink ??= s.bookingLink;
     ctx.people ??= s.people;
     ctx.vendorName ??= s.vendorName;
+  }
+
+  // Normalize location if any fields are present
+  if (ctx.location.city || ctx.location.state || ctx.location.country) {
+    ctx.location = normalizeLocation(ctx.location);
   }
 }
