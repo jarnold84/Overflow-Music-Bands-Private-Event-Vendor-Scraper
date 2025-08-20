@@ -1,6 +1,6 @@
 // File: src/domainContext.ts
-import type { DomainContext, PageSignals } from './types.js';
-import { getHostname } from './utils/url.js';
+import type { DomainContext, PageSignals } from './types';
+import { getHostname } from './utils/url';
 
 const contexts = new Map<string, DomainContext>();
 
