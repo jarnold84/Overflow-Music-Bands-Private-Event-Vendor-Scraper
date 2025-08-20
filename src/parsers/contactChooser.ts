@@ -1,5 +1,5 @@
 // File: src/parsers/contactChooser.ts
-import type { Contact } from '../types.js';
+import type { Contact } from '../types';
 
 // Chooses the best contact based on role/email patterns
 export function chooseBestContact(contacts: Contact[]): Contact | null {
