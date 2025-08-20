@@ -7,7 +7,6 @@ import { recomputeScore, shouldStop } from './stopRules';
 import { discoverLinks } from './utils/url'; // Adjust if using `selectors.ts`
 import { persistAndPush } from './output';
 import { Actor } from 'apify';
-import type { ActorInput } from './types';
 
 export const router = createRouteHandler<ActorInput>();
 
