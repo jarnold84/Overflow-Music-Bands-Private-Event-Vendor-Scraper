@@ -6,8 +6,7 @@ import type { ActorInput } from './utils/types';
 
 await Actor.init();
 
-const input = await Actor.getInput() as ActorInput;
-
+const input = await Actor.getInput<ActorInput>();
 if (!input || !input.startUrls?.length || !input.mode) {
     throw new Error('Missing startUrls or mode');
 }
