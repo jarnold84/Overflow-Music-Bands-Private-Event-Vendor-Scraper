@@ -1,6 +1,6 @@
 // File: src/stopRules.ts
-import type { DomainContext } from './types.js';
-import { classifyVendor } from './parsers/vendorClassifier.js';
+import type { DomainContext } from './types';
+import { classifyVendor } from './parsers/vendorClassifier';
 
 export function shouldStop(ctx: DomainContext, cfg: any): boolean {
   const hasContact = !!ctx.bestContact?.email || !!ctx.bestContact?.contactPage || !!ctx.bestContact?.rfpUrl;
