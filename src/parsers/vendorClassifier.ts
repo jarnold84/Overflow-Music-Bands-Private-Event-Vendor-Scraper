@@ -6,13 +6,18 @@ import type { PageSnapshot, PageSignals } from '../types';
  * Extracts vendor-related classification hints from page text.
  * This helps score the vendorType and segmentFocus later.
  */
-export function extractVendorClassifier(snapshot: PageSnapshot): PageSignals {
+export function classifyVendor(snapshot: PageSnapshot): Vendor {
+  const vendorTypeHints = extractVendorHints(snapshot.text);
+
+  // Example logic
+  const type = vendorTypeHints.includes('flowers') ? 'Florist' : 'Unknown';
+
   return {
-    text: snapshot.text, // ✅ Feed full text forward for later scoring
-    vendorTypeHints: extractVendorHints(snapshot.text),
-    // Future: segmentFocus, eventTypes, etc.
+    type,
+    confidence: 0.9, // or whatever scoring logic you want
   };
 }
+
 
 /**
  * Naive vendor hint extractor — searches text for common vendor types.
