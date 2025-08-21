@@ -49,6 +49,7 @@ export function addSignals(ctx: DomainContext, sig: PageSignals) {
     ctx.bookingLink ??= s.bookingLink;
     ctx.people ??= s.people;
     ctx.vendorName ??= s.vendorName;
+    ctx.portfolioLinks ??= s.portfolioLinks;
   }
 
   if (ctx.location.city || ctx.location.state || ctx.location.country) {
