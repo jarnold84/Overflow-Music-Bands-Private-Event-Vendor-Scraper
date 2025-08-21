@@ -13,7 +13,7 @@ export async function createCrawler(input: ActorInput) {
       log.info(`Handling ${ctx.request.url}`);
       // Note: your router handler signature stays as-is
       // (it recomputes stop rules internally now)
-      await (await import('./router')).routerHandler(ctx, input.mode);
+      await (await import('./router.js')).routerHandler(ctx, input.mode);
     },
     headless: true,
     maxConcurrency: input.maxConcurrency ?? 10,
