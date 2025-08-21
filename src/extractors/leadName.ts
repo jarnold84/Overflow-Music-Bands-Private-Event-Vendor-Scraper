@@ -17,7 +17,7 @@ export function extractLeadName(html: string): string | null {
 }
 
 /*
-🔮 Future Enhancements (optional later):
+🔮 TO DO:
 - Add logic to avoid company names (e.g., "Jane Doe Studio")
 - Add page-prioritized extraction (About → Contact → Team)
 - Add fuzzy GPT fallback (if nothing obvious found)
