@@ -1,15 +1,27 @@
+// /package.json
+
 {
-  "name": "overflow-music-bands-private-event-vendor-scraper",
+  "name": "overflow-universal-lead-scraper", // ✅ Name reflects universal vision
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "start": "node dist/actor.js",
-    "build": "rm -rf dist && tsc -p ."
+    "start": "node dist/actor.js", // 🔁 Standard for Apify Actors
+    "build": "rm -rf dist && tsc -p ." // 🧼 Clean build
   },
   "dependencies": {
-    "apify": "^3.4.4",
-    "crawlee": "^3.14.1",
-    "playwright-core": "^1.44.0",
-    "typescript": "^5.3.3"
+    "apify": "^3.4.4",             // 🧠 Needed for Actor platform + dataset access
+    "crawlee": "^3.14.1",          // 🕷️ Your main crawling/scraping engine
+    "playwright-core": "^1.44.0",  // 🎭 Headless browser automation
+    "typescript": "^5.3.3"         // ⌨️ Type-safe dev
   }
 }
+/* Optional Future Enhancement: TO DO
+Add Linting & Formatting for Code Consistency
+
+Consider adding ESLint and Prettier for maintainability:
+npm install --save-dev eslint prettier
+
+And extend scripts:
+"lint": "eslint . --ext .ts",
+"format": "prettier --write ."
+*/
