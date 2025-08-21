@@ -14,7 +14,7 @@ export const routerHandler = async (ctx: any, mode: CampaignMode) => {
   const url = request.url;
   const domain = new URL(url).hostname;
 
-  const FORCE_PUSH = false;
+  const FORCE_PUSH = true;
 
   log.info(`🔍 RouterHandler triggered for URL: ${url}`);
 
