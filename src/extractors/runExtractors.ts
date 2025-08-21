@@ -3,16 +3,16 @@
 import type { DomainContext, CampaignMode } from '../utils/types';
 import type { PageSnapshot } from '../utils/snapshot';
 
-import { extractEmails } from './email';
-import { extractPhones } from './phone';
-import { extractStyleVibe } from './styleVibe';
-import { extractServices } from './services';
-import { extractAddress } from './address';
-import { extractSocials } from './socials';
-import { extractVendorName } from './name';
+import { extractEmails } from './email.js';
+import { extractPhones } from './phone.js';
+import { extractStyleVibe } from './styleVibe.js';
+import { extractServices } from './services.js';
+import { extractAddress } from './address.js';
+import { extractSocials } from './socials.js';
+import { extractVendorName } from './name.js';
 
-import { chooseBestContact } from '../parsers/contactChooser';
-import { normalizeLocation } from '../parsers/locationNorm';
+import { chooseBestContact } from '../parsers/contactChooser.js';
+import { normalizeLocation } from '../parsers/locationNorm.js';
 
 export async function runExtractors(
   snapshot: PageSnapshot,
