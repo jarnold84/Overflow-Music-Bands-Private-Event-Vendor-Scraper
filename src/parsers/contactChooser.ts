@@ -1,5 +1,5 @@
 // File: src/parsers/contactChooser.ts
-import type { Contact } from '../utils/types';
+import type { Contact } from '../utils/types.js';
 
 export function chooseBestContact(contacts: Contact[]): Contact | null {
   if (!contacts?.length) return null;
