@@ -21,5 +21,5 @@ export function extractBusinessName(html: string): string | null {
     return null;
 }
 /*
-🔧 Later: You could refine title matching with domain name filtering, e.g., skip entries that just say “SunshineFlorist.com”.
+🔧 TO DO: You could refine title matching with domain name filtering, e.g., skip entries that just say “SunshineFlorist.com”.
 */
