@@ -1,5 +1,3 @@
-// File: src/domainContext.ts
-
 import type { DomainContext, PageSignals } from './utils/types';
 import { getHostname } from './utils/url';
 import { normalizeLocation } from './parsers/locationNorm';
@@ -10,13 +8,7 @@ export function getContext(seedUrl: string): DomainContext {
   const domain = getHostname(seedUrl);
   let ctx = contexts.get(domain);
   if (!ctx) {
-    ctx = {
-      domain,
-      seedUrl,
-      pagesVisited: new Set(),
-      signals: [],
-      score: 0,
-    };
+    ctx = { domain, seedUrl, pagesVisited: new Set(), signals: [], score: 0 };
     contexts.set(domain, ctx);
   }
   return ctx;
@@ -25,26 +17,22 @@ export function getContext(seedUrl: string): DomainContext {
 export function addSignals(ctx: DomainContext, sig: PageSignals) {
   ctx.signals.push(sig);
 
-  // Collect all contacts from signals
   const allContacts = ctx.signals.flatMap((s) => s.contacts ?? []);
   ctx.contacts = allContacts;
 
-  // Select best contact
   const priorityPatterns = [/events/i, /groups/i, /sales/i, /catering/i];
-  ctx.bestContact = allContacts.find((c) =>
-    priorityPatterns.some((p) => p.test(c.email) || p.test(c.role))
-  ) || allContacts[0];
+  ctx.bestContact =
+    allContacts.find((c) => priorityPatterns.some((p) => p.test(c.email ?? '') || p.test(c.role ?? ''))) ||
+    allContacts[0] ||
+    null;
 
-  // Merge best contact fields
   ctx.email = ctx.bestContact?.email;
   ctx.phone = ctx.bestContact?.phone;
   ctx.contactPage = ctx.bestContact?.contactPage;
   ctx.rfpUrl = ctx.bestContact?.rfpUrl;
 
-  // Ensure location object exists
   ctx.location ??= {};
 
-  // Merge other top-level fields from signals
   for (const s of ctx.signals) {
     ctx.location.city ??= s.city;
     ctx.location.state ??= s.state;
@@ -63,7 +51,6 @@ export function addSignals(ctx: DomainContext, sig: PageSignals) {
     ctx.vendorName ??= s.vendorName;
   }
 
-  // Normalize location if any fields are present
   if (ctx.location.city || ctx.location.state || ctx.location.country) {
     ctx.location = normalizeLocation(ctx.location);
   }
