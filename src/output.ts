@@ -1,17 +1,11 @@
-// File: src/output.ts
+// src/output.ts
 import { Dataset } from 'crawlee';
 import { buildMessagePersona } from './parsers/buildPersona';
 import type { DomainContext } from './utils/types';
 
-/**
- * Persists the final lead + messagePersona into the dataset.
- * 
- * This runs when stopRules.ts determines we're done with this domain.
- */
-export async function persistAndPush(ctx: DomainContext, input: any) {
+export async function persistAndPush(ctx: DomainContext, _input: any) {
   const dataset = await Dataset.open();
 
-  // Build flat lead structure from context
   const lead = {
     domain: ctx.domain,
     seedUrl: ctx.seedUrl,
@@ -46,7 +40,14 @@ export async function persistAndPush(ctx: DomainContext, input: any) {
     ts: ctx.ts ?? new Date().toISOString(),
   };
 
-  const messagePersona = buildMessagePersona(lead);
+  // Narrow bestContact shape for persona builder to match its expected type
+  const personaInput = {
+    ...lead,
+    bestContact: lead.bestContact
+      ? { email: lead.bestContact.email, phone: lead.bestContact.phone }
+      : undefined,
+  };
 
+  const messagePersona = buildMessagePersona(personaInput as any);
   await dataset.pushData({ lead, messagePersona });
 }
