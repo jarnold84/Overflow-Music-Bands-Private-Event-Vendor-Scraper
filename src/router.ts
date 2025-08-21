@@ -43,7 +43,8 @@ export const routerHandler = async (ctx: any, mode: CampaignMode) => {
   await runExtractors(snapshot, context, mode);
   log.info(`🔍 Extractors finished. Checking stop rules.`);
 
-  if (stopRulesMet(context)) {
+  // Force push for testing
+    if (true || stopRulesMet(context)) {
     log.info(`🚦 Stop rules met. Persisting and pushing context.`);
     await persistAndPush(context, {});
   } else {
