@@ -38,46 +38,6 @@ The goal is to power **soulful, personalized outreach** by gathering context-ric
 Each run pushes a structured JSON object per domain:
 
 ```json
-# 🌐 Overflow Universal Leads Scraper
-
-An AI-powered, configurable web crawler that extracts high-quality lead data from structured websites — including contact info, persona insights, services, style, and more.
-
-Originally built for wedding and private event vendors, this scraper has evolved into a **universal entity scraper** capable of handling:
-
-- 🌱 Solo Creators (artists, therapists, coaches)
-- 🏢 Organizations (venues, schools, nonprofits)
-- 🎙️ Personal Brands (podcasters, authors, hybrid identities)
-
----
-
-## 🎯 Purpose
-
-The goal is to power **soulful, personalized outreach** by gathering context-rich data across multiple channels and use cases — feeding directly into the [Overflow System](https://overflow.io) or your custom CRM/outreach stack.
-
----
-
-## 🧠 What It Does
-
-- 🔍 Crawls websites starting from a seed URL
-- 🧠 Extracts:
-  - Emails, contact forms, phone numbers
-  - Social handles (Instagram, Facebook, etc.)
-  - Services and style/vibe words
-  - Bio and persona summaries
-  - Location, audience clues, and more
-- ⚙️ Operates based on campaign-specific configs:
-  - `entityType`: "individual" | "org" | "hybrid"
-  - `requiredSignals`: e.g., email, persona
-  - `linkPriorityMap` to control crawl behavior
-  - `needsSocialFallback`: whether to queue for social scraping later
-
----
-
-## 📦 Output
-
-Each run pushes a structured JSON object per domain:
-
-```json
 {
   "domain": "example.com",
   "seedUrl": "https://example.com/about",
