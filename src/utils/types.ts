@@ -1,27 +1,21 @@
-// File: src/utils/types.ts
+export type CampaignMode = 'wedding' | 'corporate' | 'mixed';
 
 export type ActorInput = {
   startUrls: string[];
-  mode: 'wedding' | 'corporate';
+  mode: CampaignMode;
+  // Optional runtime knobs for PlaywrightCrawler
+  maxConcurrency?: number;
+  proxyConfiguration?: { proxyUrls?: string[]; useApifyProxy?: boolean };
 };
 
 export type Lead = {
-  vendor?: {
-    name?: string;
-    typeHints?: string[];
-  };
+  vendor?: { name?: string; typeHints?: string[] };
   services?: string[];
   styleVibe?: string[];
   location?: string;
   socials?: string[];
-  contacts?: {
-    email?: string;
-    phone?: string;
-  }[];
-  bestContact?: {
-    email?: string;
-    phone?: string;
-  };
+  contacts?: { email?: string; phone?: string }[];
+  bestContact?: { email?: string; phone?: string };
   segmentFocus?: string;
   eventTypes?: string[];
   clienteleProfile?: string;
@@ -83,7 +77,7 @@ export interface PageSignals {
   people?: Contact[];
   vendorName?: string;
   portfolioLinks?: string[];
-  text?: string; // ✅ for classifier scoring
+  text?: string; // for classifier scoring
 }
 
 export interface DomainContext {
@@ -99,7 +93,7 @@ export interface DomainContext {
   vendorName?: string;
 
   contacts?: Contact[];
-  bestContact?: Contact;
+  bestContact?: Contact | null;
   email?: string;
   phone?: string;
   contactPage?: string;
@@ -111,12 +105,7 @@ export interface DomainContext {
   styleVibe?: string[];
   clienteleProfile?: string;
   services?: string[];
-  location?: {
-    city?: string;
-    state?: string;
-    country?: string;
-    metro?: string;
-  };
+  location?: { city?: string; state?: string; country?: string; metro?: string };
   serviceRadius?: string;
   values?: string[];
   socialProof?: string[];
@@ -129,6 +118,7 @@ export interface DomainContext {
   crawlRunId?: string;
   ts?: string;
   text?: string; // for classifier scoring
+  socials?: Record<string, string>;
 }
 
 export interface MessagePersona {
