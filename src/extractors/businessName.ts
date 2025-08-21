@@ -1,5 +1,5 @@
-// Attempts to extract the vendor or business name from the HTML
-export function extractVendorName(html: string): string | null {
+// Attempts to extract the business name from the HTML
+export function extractBusinessName(html: string): string | null {
     // Try common title patterns
     const titleMatch = html.match(/<title>(.*?)<\/title>/i);
     if (titleMatch) {
