@@ -9,7 +9,7 @@ import type { DomainContext, CampaignMode } from './utils/types.js';
 export const router = Router.create();
 const domainContexts = new Map<string, DomainContext>();
 
-export async function routerHandler(ctx: any, mode: CampaignMode) {
+const routerHandler = async (ctx: any, mode: CampaignMode) => {
   const { request, page } = ctx;
   const url = request.url;
   const domain = new URL(url).hostname;
@@ -37,4 +37,6 @@ export async function routerHandler(ctx: any, mode: CampaignMode) {
   if (stopRulesMet(context)) {
     await persistAndPush(context, {});
   }
-}
+};
+
+export { routerHandler };
