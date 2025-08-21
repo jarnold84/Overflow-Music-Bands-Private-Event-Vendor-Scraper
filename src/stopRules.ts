@@ -1,7 +1,7 @@
 // File: src/stopRules.ts
 
-import type { DomainContext } from './utils/types';
-import { classifyVendor } from './parsers/vendorClassifier';
+import type { DomainContext } from './utils/types.js';
+import { classifyVendor } from './parsers/vendorClassifier.js';
 
 export type StopRulesConfig = {
   vendorConfidenceThreshold?: number; // default 0.6
