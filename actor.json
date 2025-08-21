@@ -1,6 +1,6 @@
 {
-  "name": "overflow-music-bands-private-event-vendor-scraper",
-  "description": "Extracts high-value lead and messaging data from vendor websites for weddings and corporate/private events.",
+  "name": "overflow-universal-leads-scraper",
+  "description": "Extracts high-value lead and messaging data from websites.",
   "version": "0.1",
   "main": "dist/actor",
   "build": "npm run build",
