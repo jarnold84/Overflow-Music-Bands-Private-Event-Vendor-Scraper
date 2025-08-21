@@ -1,7 +1,7 @@
 // src/crawler.ts
 import { PlaywrightCrawler, log } from 'crawlee';
 import { Actor } from 'apify';
-import type { ActorInput } from './utils/types';
+import type { ActorInput } from './utils/types.js';
 
 export async function createCrawler(input: ActorInput) {
   const proxy = input.proxyConfiguration
