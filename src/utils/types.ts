@@ -116,6 +116,39 @@ export interface DomainContext {
   >;
 }
 
+export interface Lead {
+  leadName?: string;
+  businessName?: string;
+  leadType?: string;
+  leadConfidence?: number;
+  contacts?: Contact[];
+  bestContact?: Contact;
+  email?: string;
+  phone?: string;
+  contactPage?: string;
+  rfpUrl?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  metro?: string;
+  segmentFocus?: string;
+  eventTypes?: string[];
+  clienteleProfile?: string;
+  services?: string[];
+  styleVibe?: string[];
+  values?: string[];
+  socialProof?: string[];
+  fnbMinimumUSD?: number;
+  revMinimumUSD?: number;
+  bookingLink?: string;
+  people?: Contact[];
+  capacityNotes?: string;
+  portfolioLinks?: string[];
+  crawlRunId?: string;
+  ts?: string;
+  socials?: Record<string, { handle?: string; url?: string }>;
+}
+
 export interface MessagePersona {
   leadName?: string;
   businessName?: string;
@@ -136,15 +169,14 @@ export interface MessagePersona {
   socials?: Record<string, { handle?: string; url?: string }>;
   bestHookIdeas: string[];
 }
+
 /*
-TO DO (optional future upgrades):
-- IMPORTANT: update references from company → businessName
-- Move src/utils/types.ts to src/types.ts, update all references in other code
-- Add a `missingInfoReasons?: string[]` field to help debug or guide fallback logic
-- Add a `sourcePages?: { label: string; url: string }[]` field to track which page contributed which signal
-- Add a `hasValidContact: boolean` boolean for social-fallback routing
-- Consider adding `tags?: string[]` for GPT-generated metadata like "eco-friendly" or "luxury"
-- Allow `socials` to support platform-specific metadata (e.g. follower count, IG bio, etc)
-- Consider distinguishing between `primaryEmail` and `supportEmail` or DM-only accounts
-- Add `primaryChannel?: "email" | "instagram_dm" | "contact_form"` for future routing
+🔮 TO DO (Optional Future Enhancements):
+- Add `missingInfoReasons?: string[]` for fallback logic and debugging
+- Add `sourcePages?: { label: string; url: string }[]` to trace signal origin
+- Add `hasValidContact: boolean` for routing logic
+- Add `tags?: string[]` for GPT-generated metadata
+- Add `primaryChannel?: "email" | "instagram_dm" | "contact_form"` for routing
+- Enrich `socials` with metadata (followers, bios, etc.)
+- Move file to `src/types.ts` for consistency and clarity
 */
