@@ -40,7 +40,8 @@ export async function persistAndPush(ctx: DomainContext, _input: any) {
     ts: ctx.ts ?? new Date().toISOString(),
   };
 
-  // Narrow bestContact shape for persona builder to match its expected type
+  console.log('🧠 Pushing to dataset:', JSON.stringify(lead, null, 2));
+
   const personaInput = {
     ...lead,
     bestContact: lead.bestContact
