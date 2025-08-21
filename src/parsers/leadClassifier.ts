@@ -1,17 +1,17 @@
-// File: src/parsers/vendorClassifier.ts
+// File: src/parsers/leadClassifier.ts
 
 import type { PageSnapshot } from '../utils/snapshot';
 
-export interface Vendor {
+export interface Lead {
   type: string;
   confidence: number;
 }
 
 /**
- * Basic keyword-based classifier that attempts to identify vendor type
+ * Basic keyword-based classifier that attempts to identify lead type
  * from visible page text.
  */
-export function classifyVendor(snapshot: PageSnapshot): Vendor {
+export function classifyLead(snapshot: PageSnapshot): Lead {
   const { text } = snapshot;
   const lowercaseText = text.toLowerCase();
 
@@ -30,11 +30,11 @@ export function classifyVendor(snapshot: PageSnapshot): Vendor {
     ExperientialAgency: ['brand activation', 'immersive experience', 'event marketing', 'experiential'],
   };
 
-  for (const [vendorType, keywords] of Object.entries(keywordsMap)) {
+  for (const [leadType, keywords] of Object.entries(keywordsMap)) {
     for (const keyword of keywords) {
       if (lowercaseText.includes(keyword)) {
         return {
-          type: vendorType,
+          type: leadType,
           confidence: 0.9,
         };
       }
