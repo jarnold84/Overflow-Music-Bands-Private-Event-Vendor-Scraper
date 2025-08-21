@@ -1,6 +1,6 @@
-import type { DomainContext, PageSignals } from './utils/types';
-import { getHostname } from './utils/url';
-import { normalizeLocation } from './parsers/locationNorm';
+import type { DomainContext, PageSignals } from './utils/types.js';
+import { getHostname } from './utils/url.js';
+import { normalizeLocation } from './parsers/locationNorm.js';
 
 const contexts = new Map<string, DomainContext>();
 
