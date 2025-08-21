@@ -1,7 +1,7 @@
 // src/actor.ts
 import { Actor } from 'apify';
-import { createCrawler } from './crawler';
-import type { ActorInput } from './utils/types';
+import { createCrawler } from './crawler.js';
+import type { ActorInput } from './utils/types.js';
 
 await Actor.init();
 
