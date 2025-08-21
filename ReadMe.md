@@ -1,35 +1,147 @@
-# Overflow Music Bands Private Event Vendor Scraper
+# 🌐 Overflow Universal Leads Scraper
 
-This Apify actor scrapes **high-value contact and messaging intelligence** from websites of vendors who serve **wedding and corporate/private events** — including venues, planners, photographers, caterers, DJs, florists, and more.
+An AI-powered, configurable web crawler that extracts high-quality lead data from structured websites — including contact info, persona insights, services, style, and more.
 
-It’s designed specifically for **music bands, ensembles, or agencies** looking to connect with private event vendors for booking opportunities.
+Originally built for wedding and private event vendors, this scraper has evolved into a **universal entity scraper** capable of handling:
 
----
-
-## 💡 Use Case
-
-This actor powers **automated, personalized outreach** to event vendors by extracting:
-
-- Clean **emails**, contact pages, or RFP links
-- **Vendor type** (e.g. venue, planner, caterer)
-- **Segment focus** (wedding, corporate, social)
-- **Services, style/vibe, capacity**
-- **Event types supported**
-- **Location & metro region**
-- **Key people** (e.g. Event Manager, Owner)
-- **Socials, testimonials, awards**
-
-Outputs are optimized for downstream lead generation, enrichment, and GPT-driven cold message writing.
+- 🌱 Solo Creators (artists, therapists, coaches)
+- 🏢 Organizations (venues, schools, nonprofits)
+- 🎙️ Personal Brands (podcasters, authors, hybrid identities)
 
 ---
 
-## 🛠️ Input
+## 🎯 Purpose
 
-This actor accepts:
+The goal is to power **soulful, personalized outreach** by gathering context-rich data across multiple channels and use cases — feeding directly into the [Overflow System](https://overflow.io) or your custom CRM/outreach stack.
 
-```ts
-interface ActorInput {
-  startUrls: string[];             // List of vendor website root URLs
-  campaignMode?: "wedding" | "corporate" | "mixed"; // Optional: default = "mixed"
+---
+
+## 🧠 What It Does
+
+- 🔍 Crawls websites starting from a seed URL
+- 🧠 Extracts:
+  - Emails, contact forms, phone numbers
+  - Social handles (Instagram, Facebook, etc.)
+  - Services and style/vibe words
+  - Bio and persona summaries
+  - Location, audience clues, and more
+- ⚙️ Operates based on campaign-specific configs:
+  - `entityType`: "individual" | "org" | "hybrid"
+  - `requiredSignals`: e.g., email, persona
+  - `linkPriorityMap` to control crawl behavior
+  - `needsSocialFallback`: whether to queue for social scraping later
+
+---
+
+## 📦 Output
+
+Each run pushes a structured JSON object per domain:
+
+```json
+# 🌐 Overflow Universal Leads Scraper
+
+An AI-powered, configurable web crawler that extracts high-quality lead data from structured websites — including contact info, persona insights, services, style, and more.
+
+Originally built for wedding and private event vendors, this scraper has evolved into a **universal entity scraper** capable of handling:
+
+- 🌱 Solo Creators (artists, therapists, coaches)
+- 🏢 Organizations (venues, schools, nonprofits)
+- 🎙️ Personal Brands (podcasters, authors, hybrid identities)
+
+---
+
+## 🎯 Purpose
+
+The goal is to power **soulful, personalized outreach** by gathering context-rich data across multiple channels and use cases — feeding directly into the [Overflow System](https://overflow.io) or your custom CRM/outreach stack.
+
+---
+
+## 🧠 What It Does
+
+- 🔍 Crawls websites starting from a seed URL
+- 🧠 Extracts:
+  - Emails, contact forms, phone numbers
+  - Social handles (Instagram, Facebook, etc.)
+  - Services and style/vibe words
+  - Bio and persona summaries
+  - Location, audience clues, and more
+- ⚙️ Operates based on campaign-specific configs:
+  - `entityType`: "individual" | "org" | "hybrid"
+  - `requiredSignals`: e.g., email, persona
+  - `linkPriorityMap` to control crawl behavior
+  - `needsSocialFallback`: whether to queue for social scraping later
+
+---
+
+## 📦 Output
+
+Each run pushes a structured JSON object per domain:
+
+```json
+{
+  "domain": "example.com",
+  "seedUrl": "https://example.com/about",
+  "businessName": "Sunshine Florists",
+  "leadName": "Sally Field",
+  "contacts": [
+    {
+      "type": "email",
+      "value": "sally@sunshineflorists.com"
+    },
+    {
+      "type": "phone",
+      "value": "(555) 123-4567"
+    }
+  ],
+  "socials": {
+    "instagram": {
+      "handle": "sunshineflorists",
+      "url": "https://instagram.com/sunshineflorists"
+    },
+    "facebook": {
+      "handle": "SunshineFlorists",
+      "url": "https://facebook.com/SunshineFlorists"
+    },
+    "youtube": {
+      "handle": "SunshineFloristsTV",
+      "url": "https://youtube.com/@SunshineFloristsTV"
+    },
+    "tiktok": {
+      "handle": "sunshine.florists",
+      "url": "https://tiktok.com/@sunshine.florists"
+    },
+    "linkedin": {
+      "handle": "sunshineflorists",
+      "url": "https://linkedin.com/company/sunshineflorists"
+    },
+    "x": {
+      "handle": "SunshineBlooms",
+      "url": "https://x.com/SunshineBlooms"
+    },
+    "reddit": {
+      "handle": "u/SunshineFlorist",
+      "url": "https://reddit.com/user/SunshineFlorist"
+    },
+    "other": [
+      {
+        "platform": "threads",
+        "handle": "sunshineflorists",
+        "url": "https://www.threads.net/@sunshineflorists"
+      },
+      {
+        "platform": "pinterest",
+        "handle": "sunshinefloristspins",
+        "url": "https://pinterest.com/sunshinefloristspins"
+      }
+    ]
+  },
+  "services": [ "wedding floral design", "event styling" ],
+  "styleVibe": [ "elegant", "natural", "romantic" ],
+  "city": "Los Angeles",
+  "country": "USA",
+  "personaSummary": "Sally is the founder of Sunshine Florists, known for her romantic, nature-inspired floral designs. She caters primarily to upscale weddings in Southern California.",
+  "hasValidContact": true,
+  "ts": "2025-08-21T16:57:24.761Z"
 }
-You can call this actor from a Make (Integromat) scenario or directly through the Apify API.
+
+
