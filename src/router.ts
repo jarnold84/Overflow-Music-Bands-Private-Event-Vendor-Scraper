@@ -1,42 +1,54 @@
-// src/router.ts
-import { log, Router } from 'crawlee';
-import { buildSnapshot } from './utils/snapshot.js';
-import { runExtractors } from './extractors/runExtractors.js';
-import { persistAndPush } from './output.js';
-import { stopRulesMet } from './stopRules.js';
-import type { DomainContext, CampaignMode } from './utils/types.js';
+// src/output.ts
+import { Dataset } from 'crawlee';
+import { buildMessagePersona } from './parsers/buildPersona.js';
+import type { DomainContext } from './utils/types.js';
 
-export const router = Router.create();
-const domainContexts = new Map<string, DomainContext>();
+export async function persistAndPush(ctx: DomainContext, _input: any) {
+  const dataset = await Dataset.open();
 
-const routerHandler = async (ctx: any, mode: CampaignMode) => {
-  const { request, page } = ctx;
-  const url = request.url;
-  const domain = new URL(url).hostname;
+  const lead = {
+    domain: ctx.domain,
+    seedUrl: ctx.seedUrl,
+    vendorType: ctx.vendorType,
+    vendorConfidence: ctx.vendorConfidence,
+    vendorName: ctx.vendorName,
+    bestContact: ctx.bestContact,
+    contacts: ctx.contacts,
+    email: ctx.bestContact?.email,
+    phone: ctx.bestContact?.phone,
+    contactPage: ctx.bestContact?.contactPage,
+    rfpUrl: ctx.bestContact?.rfpUrl,
+    city: ctx.location?.city,
+    state: ctx.location?.state,
+    country: ctx.location?.country,
+    metro: ctx.location?.metro,
+    segmentFocus: ctx.segmentFocus,
+    eventTypes: ctx.eventTypes,
+    styleVibe: ctx.styleVibe,
+    services: ctx.services,
+    clienteleProfile: ctx.clienteleProfile,
+    serviceRadius: ctx.serviceRadius,
+    values: ctx.values,
+    socialProof: ctx.socialProof,
+    fnbMinimumUSD: ctx.fnbMinimumUSD,
+    revMinimumUSD: ctx.revMinimumUSD,
+    bookingLink: ctx.bookingLink,
+    people: ctx.people,
+    capacityNotes: ctx.capacityNotes,
+    portfolioLinks: ctx.portfolioLinks,
+    crawlRunId: ctx.crawlRunId,
+    ts: ctx.ts ?? new Date().toISOString(),
+  };
 
-  if (!domainContexts.has(domain)) {
-    domainContexts.set(domain, {
-      domain,
-      seedUrl: url,
-      pagesVisited: new Set(),
-      signals: [],
-      score: 0,
-    });
-  }
+  console.log('🧠 Pushing to dataset:', JSON.stringify(lead, null, 2));
 
-  const context = domainContexts.get(domain)!;
-  if (context.pagesVisited.has(url)) {
-    log.info(`Already visited: ${url}`);
-    return;
-  }
+  const personaInput = {
+    ...lead,
+    bestContact: lead.bestContact
+      ? { email: lead.bestContact.email, phone: lead.bestContact.phone }
+      : undefined,
+  };
 
-  context.pagesVisited.add(url);
-  const snapshot = await buildSnapshot(page, url);
-  await runExtractors(snapshot, context, mode);
-
-  if (stopRulesMet(context)) {
-    await persistAndPush(context, {});
-  }
-};
-
-export { routerHandler };
+  const messagePersona = buildMessagePersona(personaInput as any);
+  await dataset.pushData({ lead, messagePersona });
+}
