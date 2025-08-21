@@ -14,6 +14,8 @@ export const routerHandler = async (ctx: any, mode: CampaignMode) => {
   const url = request.url;
   const domain = new URL(url).hostname;
 
+  const FORCE_PUSH = false;
+
   log.info(`🔍 RouterHandler triggered for URL: ${url}`);
 
   if (!domainContexts.has(domain)) {
@@ -43,8 +45,7 @@ export const routerHandler = async (ctx: any, mode: CampaignMode) => {
   await runExtractors(snapshot, context, mode);
   log.info(`🔍 Extractors finished. Checking stop rules.`);
 
-  // Force push for testing
-    if (true || stopRulesMet(context)) {
+  if (FORCE_PUSH || stopRulesMet(context)) {
     log.info(`🚦 Stop rules met. Persisting and pushing context.`);
     await persistAndPush(context, {});
   } else {
