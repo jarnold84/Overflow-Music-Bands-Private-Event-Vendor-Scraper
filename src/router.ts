@@ -1,10 +1,10 @@
 // File: src/router.ts
 import { log, Router } from 'crawlee';
-import { buildSnapshot } from './utils/snapshot';
-import { runExtractors } from './extractors/runExtractors';
-import { persistAndPush } from './output';
-import { stopRulesMet } from './stopRules';
-import type { DomainContext, CampaignMode } from './utils/types';
+import { buildSnapshot } from './utils/snapshot.js';
+import { runExtractors } from './extractors/runExtractors.js';
+import { persistAndPush } from './output.js';
+import { stopRulesMet } from './stopRules.js';
+import type { DomainContext, CampaignMode } from './utils/types.js';
 
 export const router = Router.create();
 const domainContexts = new Map<string, DomainContext>();
