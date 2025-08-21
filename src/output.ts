@@ -1,7 +1,7 @@
 // src/output.ts
 import { Dataset } from 'crawlee';
-import { buildMessagePersona } from './parsers/buildPersona';
-import type { DomainContext } from './utils/types';
+import { buildMessagePersona } from './parsers/buildPersona.js';
+import type { DomainContext } from './utils/types.js';
 
 export async function persistAndPush(ctx: DomainContext, _input: any) {
   const dataset = await Dataset.open();
