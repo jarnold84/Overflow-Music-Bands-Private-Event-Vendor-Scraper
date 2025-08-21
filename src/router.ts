@@ -1,40 +1,33 @@
-// File: src/router.ts
-import { log, Router } from 'crawlee';
-import { buildSnapshot } from './utils/snapshot.js';
-import { runExtractors } from './extractors/runExtractors.js';
-import { persistAndPush } from './output.js';
-import { stopRulesMet } from './stopRules.js';
-import type { DomainContext, CampaignMode } from './utils/types.js';
+// src/crawler.ts
+import { PlaywrightCrawler, log } from 'crawlee';
+import { Actor } from 'apify';
+import type { ActorInput } from './utils/types.js';
+import { routerHandler } from './router.js';
 
-export const router = Router.create();
-const domainContexts = new Map<string, DomainContext>();
+export async function createCrawler(input: ActorInput) {
+  const proxy = input.proxyConfiguration
+    ? await Actor.createProxyConfiguration(input.proxyConfiguration as any)
+    : undefined;
 
-export async function routerHandler(ctx: any, mode: CampaignMode) {
-  const { request, page } = ctx;
-  const url = request.url;
-  const domain = new URL(url).hostname;
-
-  if (!domainContexts.has(domain)) {
-    domainContexts.set(domain, {
-      domain,
-      seedUrl: url,
-      pagesVisited: new Set(),
-      signals: [],
-      score: 0,
-    });
-  }
-
-  const context = domainContexts.get(domain)!;
-  if (context.pagesVisited.has(url)) {
-    log.info(`Already visited: ${url}`);
-    return;
-  }
-
-  context.pagesVisited.add(url);
-  const snapshot = await buildSnapshot(page, url);
-  await runExtractors(snapshot, context, mode);
-
-  if (stopRulesMet(context)) {
-    await persistAndPush(context, {});
-  }
+  return new PlaywrightCrawler({
+    requestHandler: async (ctx) => {
+      log.info(`Handling ${ctx.request.url}`);
+      await routerHandler(ctx, input.mode);
+    },
+    headless: true,
+    maxConcurrency: input.maxConcurrency ?? 10,
+    proxyConfiguration: proxy,
+    preNavigationHooks: [
+      async ({ page }) => {
+        await page.setViewportSize({ width: 1200, height: 800 });
+        await page.setExtraHTTPHeaders({ 'Accept-Language': 'en-US,en;q=0.9' });
+      },
+    ],
+    postNavigationHooks: [
+      async ({ page }) => {
+        await page.waitForLoadState('networkidle');
+      },
+    ],
+    requestHandlerTimeoutSecs: 60,
+  });
 }
