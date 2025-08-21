@@ -144,4 +144,31 @@ Each run pushes a structured JSON object per domain:
   "ts": "2025-08-21T16:57:24.761Z"
 }
 
+⚙️ Tech Stack
+
+Apify Actors
+
+Crawlee
+
+TypeScript
+
+Playwright
+
+GPT-based enrichment (optional, modular)
+
+Google Sheets, Notion, or webhook integrations via Make
+
+🔮 Coming Soon
+
+Agent-mode social scraping fallback (Instagram, Facebook, etc.)
+
+Unified enrichment and messaging pipeline
+
+Cross-channel deduplication and prioritization
+
+💞 Inspired By
+
+Overflow's mission to help artists, coaches, and change-makers share their gifts — not through spam, but through resonance.
+
+
 
