@@ -67,6 +67,7 @@ export const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 // ☎️ Phone number regex — handles international, formatted, or raw numbers
 export const PHONE_RE = /(\+?\d[\d\s().-]{7,}\d)/g;
 
+/*
 TO DO:
 - IMPORTANT: Update keywords for universal use
 - 🌐 Externalize BLOCKED/ALLOWED lists to a JSON file or config to allow user overrides
