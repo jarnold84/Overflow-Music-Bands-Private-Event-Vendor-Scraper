@@ -136,6 +136,7 @@ export interface Lead {
   eventTypes?: string[];
   clienteleProfile?: string;
   services?: string[];
+  serviceRadius?: string;
   styleVibe?: string[];
   values?: string[];
   socialProof?: string[];
