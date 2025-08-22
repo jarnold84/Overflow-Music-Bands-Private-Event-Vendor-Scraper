@@ -1,106 +1,82 @@
 # 🌐 Overflow Universal Leads Scraper
 
-An AI-powered, configurable web crawler that extracts high-quality lead data from structured websites — including contact info, persona insights, services, style, and more.
+An AI-powered, campaign-aware web crawler that extracts high-quality lead data, personas, and messaging signals from websites — designed to fuel soulful, personalized outreach.
 
-Originally built for wedding and private event vendors, this scraper has evolved into a **universal entity scraper** capable of handling:
-
-- 🌱 Solo Creators (artists, therapists, coaches)
-- 🏢 Organizations (venues, schools, nonprofits)
-- 🎙️ Personal Brands (podcasters, authors, hybrid identities)
+Originally built for wedding and private event vendors, it has evolved into a **universal, modular scraper** for creators, educators, and organizations.
 
 ---
 
 ## 🎯 Purpose
 
-The goal is to power **soulful, personalized outreach** by gathering context-rich data across multiple channels and use cases — feeding directly into the [Overflow System](https://overflow.io) or your custom CRM/outreach stack.
+Power [Overflow](https://overflow.io) or your own CRM with warm, context-rich leads — without relying on ad platforms, scraping directories, or cold LinkedIn spam.
 
 ---
 
-## 🧠 What It Does
+## 🧠 Key Features
 
+- ✅ Campaign-aware configurations: `wedding`, `corporate`, `universal`, etc.
 - 🔍 Crawls websites starting from a seed URL
 - 🧠 Extracts:
-  - Emails, contact forms, phone numbers
-  - Social handles (Instagram, Facebook, etc.)
-  - Services and style/vibe words
-  - Bio and persona summaries
-  - Location, audience clues, and more
-- ⚙️ Operates based on campaign-specific configs:
-  - `entityType`: "individual" | "org" | "hybrid"
-  - `requiredSignals`: e.g., email, persona
-  - `linkPriorityMap` to control crawl behavior
-  - `needsSocialFallback`: whether to queue for social scraping later
+  - Emails, phones, contact pages, RFP links
+  - Socials (Instagram, Facebook, YouTube, TikTok, LinkedIn, more)
+  - Services, values, and style/vibe descriptors
+  - Bio/persona summaries and segment focus
+  - Business type + inferred lead type
+  - City, state, metro, country (normalized)
+- 🧠 Uses GPT for fallback classification
+- ⚙️ Modular architecture with campaign configs
 
 ---
 
-## 📦 Output
+## 🧪 Campaign Modes
 
-Each run pushes a structured JSON object per domain:
+Set campaign mode in your input config:
 
 ```json
 {
+  "campaignMode": "wedding"
+}
+Supported modes (via campaignModeConfigs.ts):
+
+"wedding"
+
+"corporate"
+
+"universal" (default)
+
+Each mode can route to different:
+
+Classifiers
+
+Extractor preferences
+
+Stop rules
+
+Messaging personas
+
+📤 Output Format
+
+Each domain produces a JSON object with rich signals:
+
+{
   "domain": "example.com",
-  "seedUrl": "https://example.com/about",
+  "leadType": "EventVenue",
   "businessName": "Sunshine Florists",
   "leadName": "Sally Field",
   "contacts": [
-    {
-      "type": "email",
-      "value": "sally@sunshineflorists.com"
-    },
-    {
-      "type": "phone",
-      "value": "(555) 123-4567"
-    }
+    { "email": "sally@sunshineflorists.com" },
+    { "phone": "(555) 123-4567" }
   ],
   "socials": {
-    "instagram": {
-      "handle": "sunshineflorists",
-      "url": "https://instagram.com/sunshineflorists"
-    },
-    "facebook": {
-      "handle": "SunshineFlorists",
-      "url": "https://facebook.com/SunshineFlorists"
-    },
-    "youtube": {
-      "handle": "SunshineFloristsTV",
-      "url": "https://youtube.com/@SunshineFloristsTV"
-    },
-    "tiktok": {
-      "handle": "sunshine.florists",
-      "url": "https://tiktok.com/@sunshine.florists"
-    },
-    "linkedin": {
-      "handle": "sunshineflorists",
-      "url": "https://linkedin.com/company/sunshineflorists"
-    },
-    "x": {
-      "handle": "SunshineBlooms",
-      "url": "https://x.com/SunshineBlooms"
-    },
-    "reddit": {
-      "handle": "u/SunshineFlorist",
-      "url": "https://reddit.com/user/SunshineFlorist"
-    },
-    "other": [
-      {
-        "platform": "threads",
-        "handle": "sunshineflorists",
-        "url": "https://www.threads.net/@sunshineflorists"
-      },
-      {
-        "platform": "pinterest",
-        "handle": "sunshinefloristspins",
-        "url": "https://pinterest.com/sunshinefloristspins"
-      }
-    ]
+    "instagram": { "handle": "sunshineflorists", "url": "https://instagram.com/sunshineflorists" },
+    ...
   },
   "services": [ "wedding floral design", "event styling" ],
   "styleVibe": [ "elegant", "natural", "romantic" ],
+  "segmentFocus": "weddings",
   "city": "Los Angeles",
   "country": "USA",
-  "personaSummary": "Sally is the founder of Sunshine Florists, known for her romantic, nature-inspired floral designs. She caters primarily to upscale weddings in Southern California.",
-  "hasValidContact": true,
+  "personaSummary": "...",
   "ts": "2025-08-21T16:57:24.761Z"
 }
 
@@ -114,21 +90,34 @@ TypeScript
 
 Playwright
 
-GPT-based enrichment (optional, modular)
+OpenAI GPT (optional fallback classifier)
 
-Google Sheets, Notion, or webhook integrations via Make
+JSON/CSV/Webhook output
+
+Integrations via Make.com
+ (Notion, Sheets, etc)
+
+📁 Input Schema (via UI)
+{
+  "startUrls": ["https://example.com"],
+  "campaignMode": "wedding",
+  "maxConcurrency": 10,
+  "includeRawText": false
+}
+
+
+You can test directly in the Apify UI.
 
 🔮 Coming Soon
 
-Agent-mode social scraping fallback (Instagram, Facebook, etc.)
+Agent-mode fallback (social scraping if contact not found)
 
-Unified enrichment and messaging pipeline
+Per-campaign extractor logic
 
-Cross-channel deduplication and prioritization
+Auto-generated message personas and email drafts
+
+End-to-end Overflow integration
 
 💞 Inspired By
 
-Overflow's mission to help artists, coaches, and change-makers share their gifts — not through spam, but through resonance.
-
-
-
+Overflow’s mission to help artists, healers, and change-makers share their gifts through resonance, not coercion.
