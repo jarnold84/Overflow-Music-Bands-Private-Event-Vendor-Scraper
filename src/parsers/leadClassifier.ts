@@ -2,7 +2,8 @@
 
 import type { PageSnapshot } from '../utils/snapshot';
 import type { LeadTypeConfig } from '../configs/leadTypeConfigs.js';
-import { defaultLeadTypeConfigs } from '../configs/leadTypeConfigs.js';
+import { defaultLeadTypeConfigs, allLeadTypeConfigs } from '../configs/leadTypeConfigs.js';
+import { campaignModeConfigs } from '../configs/campaignModeConfigs.js';
 import { callOpenAIClassifier } from '../utils/gptClassifier.js';
 
 export interface LeadMatch {
@@ -18,14 +19,21 @@ export interface Lead {
 /**
  * Enhanced classifier: detects multiple matching lead types,
  * scores by keyword frequency, and falls back to GPT if needed.
- * Accepts optional config for campaign-specific classification.
+ * Accepts optional campaignMode string or custom config array.
  */
 export async function classifyLead(
   snapshot: PageSnapshot,
-  configs: LeadTypeConfig[] = defaultLeadTypeConfigs
+  campaignMode?: string
 ): Promise<Lead> {
   const { text } = snapshot;
   const lowercaseText = text.toLowerCase();
+
+  // Determine configs: use campaign whitelist if defined, else default
+  let configs: LeadTypeConfig[] = defaultLeadTypeConfigs;
+  if (campaignMode && campaignModeConfigs[campaignMode]) {
+    const allowedTypes = campaignModeConfigs[campaignMode].leadTypeWhitelist;
+    configs = defaultLeadTypeConfigs.filter((cfg) => allowedTypes.includes(cfg.leadType));
+  }
 
   const matches: LeadMatch[] = [];
 
@@ -40,11 +48,13 @@ export async function classifyLead(
     }
   }
 
+  // Fallback to GPT if no keyword matches
   if (matches.length === 0) {
     const gptFallback = await callOpenAIClassifier(text);
     matches.push(gptFallback);
   }
 
+  // Select primary by confidence
   const primary = matches.reduce((a, b) => (a.confidence > b.confidence ? a : b));
 
   return { matches, primary };
