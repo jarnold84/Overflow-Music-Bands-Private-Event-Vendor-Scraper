@@ -1,6 +1,6 @@
 // File: src/extractors/runExtractors.ts
 
-import type { DomainContext, CampaignMode, ActorInput } from '../utils/types';
+import type { DomainContext, ActorInput } from '../utils/types';
 import type { PageSnapshot } from '../utils/snapshot';
 
 import { extractEmails } from './email.js';
@@ -14,14 +14,20 @@ import { extractBusinessName } from './businessName.js';
 
 import { chooseBestContact } from '../parsers/contactChooser.js';
 import { normalizeLocation } from '../parsers/locationNorm.js';
+import { detectStructureMode } from '../analyzers/detectStructureMode.js';
 
 export async function runExtractors(
   snapshot: PageSnapshot,
   ctx: DomainContext,
-  mode: CampaignMode,
+  _structureMode: string,
   input: ActorInput
 ): Promise<void> {
   const { html, text } = snapshot;
+
+  // Detect and store structure mode
+  const structureMode = detectStructureMode(snapshot);
+  ctx.structureMode = structureMode;
+  console.log(`🏗 Detected structure mode: ${structureMode}`);
 
   // Basic contacts
   const emails = extractEmails(text);
@@ -52,7 +58,7 @@ export async function runExtractors(
     ctx.text = text;
   }
 
-  // (Optional) Mode-specific scoring logic could go here later
+  // (Optional) Structure-specific extractor logic could go here later
 }
 
 /*
@@ -62,7 +68,7 @@ TO DO:
     → for ethical positioning, testimonials, etc.
 - 🧠 Add GPT fallback if leadName or businessName are still missing
     → requires snapshot text and context
-- 🧑‍🤝‍🧑 Add extraction of team members/people (e.g., from team/staff/about pages)
+- 🧑‍🧱 Add extraction of team members/people (e.g., from team/staff/about pages)
     → update DomainContext.people: Contact[]
 - 🕸️ Add `sourcePage` tagging per signal (e.g. came from /about or /services)
 - ✨ Add plugin-style modular extractor loader by signal type
@@ -75,5 +81,4 @@ TO DO:
 - Allow confidence scoring or field-level provenance tags (e.g. "leadName came from /about")
 - Log fallback triggers when leadName/businessName not detected
 - De-duplicate signals across pages (e.g. contact blocks)
-
 */
