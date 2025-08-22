@@ -1,47 +1,55 @@
 // File: src/parsers/leadClassifier.ts
 
 import type { PageSnapshot } from '../utils/snapshot';
+import { leadTypeConfigs } from '../configs/leadTypeConfigs.js';
+import { callOpenAIClassifier } from '../utils/gptClassifier.js';
 
-export interface Lead {
+export interface LeadMatch {
   leadType: string;
   confidence: number;
 }
 
+export interface Lead {
+  matches: LeadMatch[];
+  primary: LeadMatch;
+}
+
 /**
- * Basic keyword-based classifier that attempts to identify lead type
- * from visible page text.
+ * Enhanced classifier: detects multiple matching lead types,
+ * scores by keyword frequency, and falls back to GPT if needed.
  */
-export function classifyLead(snapshot: PageSnapshot): Lead {
+export async function classifyLead(snapshot: PageSnapshot): Promise<Lead> {
   const { text } = snapshot;
   const lowercaseText = text.toLowerCase();
 
-  const keywordsMap: Record<string, string[]> = {
-    EventVenue: ['event space', 'venue rental', 'ballroom', 'banquet hall', 'conference room', 'event venue'],
-    EventPlanner: ['event planner', 'event planning', 'wedding planner', 'event design', 'coordinator'],
-    Festival: ['festival', 'music fest', 'film fest', 'conference', 'expo', 'summit'],
-    Podcast: ['podcast', 'listen on spotify', 'new episode', 'hosted by', 'apple podcasts'],
-    RetreatCenter: ['retreat', 'healing center', 'wellness retreat', 'eco lodge', 'sanctuary'],
-    MediaHost: ['guest speaker', 'webinar host', 'interview series', 'live show', 'virtual event'],
-    Studio: ['yoga studio', 'dance studio', 'movement studio', 'wellness space'],
-    Teacher: ['music teacher', 'private lessons', 'faculty', 'instructor', 'classes'],
-    CreativeService: ['photography', 'videography', 'dj services', 'catering', 'graphic design', 'web design'],
-  };
+  const matches: LeadMatch[] = [];
 
-  for (const [leadType, keywords] of Object.entries(keywordsMap)) {
-    for (const keyword of keywords) {
-      if (lowercaseText.includes(keyword)) {
-        return {
-          leadType,
-          confidence: 0.9,
-        };
-      }
+  for (const config of leadTypeConfigs) {
+    let frequency = 0;
+    for (const keyword of config.keywords) {
+      frequency += lowercaseText.split(keyword).length - 1;
+    }
+    if (frequency > 0) {
+      const confidence = Math.min(0.3 + frequency * 0.1, 0.95);
+      matches.push({ leadType: config.leadType, confidence });
     }
   }
 
-  return {
-    leadType: 'Unknown',
-    confidence: 0.2,
-  };
+  if (matches.length === 0) {
+    const gptFallback = await callOpenAIClassifier(text);
+    matches.push(gptFallback);
+  }
+
+  const primary = matches.reduce((a, b) => (a.confidence > b.confidence ? a : b));
+
+  return { matches, primary };
 }
 
-// TO DO: 
+
+/*
+Category prioritization rules
+→ Add logic to prefer certain categories over others when multiple matches occur (e.g., prioritize “Podcast” over “MediaHost” if both match).
+
+Campaign-specific classifier sets
+→ Swap leadTypeConfigs dynamically based on campaign type (e.g., coach_outreach, festival_bookings) to fine-tune detection.
+*/
