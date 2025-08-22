@@ -1,3 +1,4 @@
+// File: src/services.ts
 // Extracts lead services keywords (e.g. 'catering', 'DJ', 'event production')
 const SERVICE_KEYWORDS = ['venue', 'planner', 'photographer', 'dj', 'band', 'florist', 'caterer', 'av', 'event production', 'dmc'];
 
