@@ -11,6 +11,16 @@
       "items": {
         "type": "string",
         "format": "uri"
+        "anyOf": [
+          { "type": "string", "format": "uri" },
+          {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "format": "uri" }
+            },
+            "required": ["url"]
+          }
+        ]
       },
       "minItems": 1
     },
@@ -36,26 +46,6 @@
     "proxyConfiguration": {
       "title": "Proxy Configuration",
       "type": "object",
-      "description": "Use Apify proxy or custom proxy URLs for distributed IPs.",
-      "properties": {
-        "useApifyProxy": {
-          "type": "boolean",
-          "default": true
-        },
-        "proxyUrls": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "includeRawText": {
-      "title": "Include Raw Text",
-      "type": "boolean",
-      "description": "Whether to store raw page text in the output. Useful for debugging or GPT enrichment.",
-      "default": false
-    }
   },
   "required": ["startUrls"]
 }
