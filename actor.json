@@ -12,13 +12,3 @@
     "actorBuildId": "development"
   }
 }
-/*
-TO DO:
-
-- Add actor logo/icon (in Apify UI) for branding
-- Add README badge for version or build status (if hosted on GitHub)
-- Consider adding `inputSchema` later for Apify GUI users (if public-facing)
-- Once stable, bump version to 1.0.0 and tag as "production"
-- Optionally add more metadata under "meta" for internal tracking:
-   e.g. "intendedUse": "leadGen | enrichment", "audience": "creators, agencies"
-*/
