@@ -21,13 +21,9 @@
         "type": "array",
         "description": "List of URLs to begin crawling from.",
         "items": {
-          "type": "object",
-          "properties": {
-            "url": {
           "anyOf": [
             {
               "type": "string",
-              "title": "URL"
               "title": "URL",
               "format": "uri"
             },
@@ -38,8 +34,6 @@
               },
               "required": ["url"]
             }
-          },
-          "required": ["url"]
           ]
         }
       },
