@@ -15,7 +15,7 @@ export async function persistAndPush(ctx: DomainContext, _input: any) {
     leadType: ctx.leadType,
     leadConfidence: ctx.leadConfidence,
     leadName: ctx.leadName,
-    company: ctx.company,
+    businessName: ctx.businessName,
 
     // Contact info
     bestContact: ctx.bestContact,
