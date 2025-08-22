@@ -10,6 +10,7 @@ export type ActorInput = {
     proxyUrls?: string[];
     useApifyProxy?: boolean;
   };
+  includeRawText?: boolean; // ✅ ← Add this line
 };
 
 export interface Contact {
