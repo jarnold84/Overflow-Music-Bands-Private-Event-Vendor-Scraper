@@ -4,13 +4,13 @@ export type CampaignMode = 'wedding' | 'corporate' | 'mixed' | 'universal';
 
 export type ActorInput = {
   startUrls: string[];
-  mode: CampaignMode;
+  mode?: CampaignMode; // 👈 make mode optional for flexibility
   maxConcurrency?: number;
   proxyConfiguration?: {
     proxyUrls?: string[];
     useApifyProxy?: boolean;
   };
-  includeRawText?: boolean; // ✅ ← Add this line
+  includeRawText?: boolean;
 };
 
 export interface Contact {
