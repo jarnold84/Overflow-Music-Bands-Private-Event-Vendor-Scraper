@@ -9,8 +9,6 @@
       "type": "array",
       "description": "List of URLs to begin scraping from. These should be relevant to the campaign (e.g. vendor directories, faculty pages, retreat listings).",
       "items": {
-        "type": "string",
-        "format": "uri"
         "anyOf": [
           { "type": "string", "format": "uri" },
           {
