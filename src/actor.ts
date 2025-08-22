@@ -8,12 +8,12 @@ await Actor.init();
 
 const input = await Actor.getInput<ActorInput>();
 
-if (!input || !input.startUrls?.length || !input.mode) {
-  throw new Error('❌ Missing required input: startUrls or mode');
+if (!input || !input.startUrls?.length) {
+  throw new Error('❌ Missing required input: startUrls');
 }
 
 console.log(`🚀 Starting Overflow Universal Lead Scraper`);
-console.log(`🔧 Mode: ${input.mode}`);
+console.log(`🧭 Campaign Mode: ${input.campaignMode || 'universal (default)'}`);
 console.log(`🌐 URLs to visit: ${input.startUrls.length}`);
 
 const crawler = await createCrawler(input);
