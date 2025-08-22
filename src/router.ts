@@ -12,12 +12,28 @@ export const router = Router.create();
 const domainContexts = new Map<string, DomainContext>();
 
 /**
+ * Initializes a new domain context object if it's the first time visiting this domain.
+ */
+function initDomainContext(domain: string, url: string): DomainContext {
+  const context: DomainContext = {
+    domain,
+    seedUrl: url,
+    pagesVisited: new Set(),
+    signals: [],
+    score: 0,
+  };
+  domainContexts.set(domain, context);
+  log.info(`🚀 Initialized domain context for: ${domain}`);
+  return context;
+}
+
+/**
  * Primary handler for each crawled page. Runs snapshot, extraction,
  * stop-rule logic, and dataset push if appropriate.
  */
 export const routerHandler = async (
   ctx: any,
-  _campaignMode: string, // Deprecated: we now detect structure dynamically
+  campaignMode: string, // ✅ Now used for classification configs
   _request?: any,
   _page?: any
 ) => {
@@ -25,23 +41,13 @@ export const routerHandler = async (
   const url = request.url;
   const domain = new URL(url).hostname;
 
-  const FORCE_PUSH = true; // For dev/test; may remove or parameterize in prod
+  const FORCE_PUSH = true; // For dev/test; toggle false in prod
 
   log.info(`🔍 RouterHandler triggered for URL: ${url}`);
 
   // Initialize context if first visit to domain
-  if (!domainContexts.has(domain)) {
-    domainContexts.set(domain, {
-      domain,
-      seedUrl: url,
-      pagesVisited: new Set(),
-      signals: [],
-      score: 0,
-    });
-    log.info(`🚀 Initialized domain context for: ${domain}`);
-  }
-
-  const context = domainContexts.get(domain)!;
+  const context =
+    domainContexts.get(domain) || initDomainContext(domain, url);
 
   // Avoid reprocessing already-visited pages
   if (context.pagesVisited.has(url)) {
@@ -59,8 +65,8 @@ export const routerHandler = async (
   context.structureMode = structureMode;
   log.info(`🏗 Structure mode detected: ${structureMode}`);
 
-  log.info(`🔧 Running extractors.`);
-  await runExtractors(snapshot, context, structureMode, ctx.input);
+  log.info(`🔧 Running extractors (mode: ${campaignMode}).`);
+  await runExtractors(snapshot, context, structureMode, campaignMode);
   log.info(`🔍 Extractors finished. Checking stop rules.`);
 
   if (FORCE_PUSH || stopRulesMet(context)) {
@@ -71,14 +77,14 @@ export const routerHandler = async (
   }
 };
 
-
 /*
-TO DO (optional upgrades):
-- Add logic to persist domainContexts map across pages for large crawls (e.g. via Dataset or KeyValueStore)
-- Use Apify's `pushData` per-page for streamed output instead of batch-level
-- Add signal for early exit (e.g. stop after N signals found)
-- Modularize domain context initialization into helper function
-- Add per-domain max depth or max pages for crawl throttling
-- Include retry handling or fallbacks if extractors crash
-- Log total time spent per domain for performance metrics
+🧠 TO DO (Optional Future Enhancements):
+
+- Persist `domainContexts` using KeyValueStore to support long crawls or resume
+- Modularize routing by structureMode (e.g. team-directory vs. single-page)
+- Add retry or fallback signals if extractors crash or fail to extract minimum info
+- Enable per-domain maxDepth or maxPages throttling
+- Add crawler stats summary at end of run (time spent, pages visited, final score)
+- Push signal logs per page for transparency/debugging
+- Add campaignMode to pushed output for traceability
 */
