@@ -14,7 +14,12 @@ const domainContexts = new Map<string, DomainContext>();
  * Primary handler for each crawled page. Runs snapshot, extraction,
  * stop-rule logic, and dataset push if appropriate.
  */
-export const routerHandler = async (ctx: any, mode: CampaignMode) => {
+export const routerHandler = async (
+  ctx: any,
+  mode: CampaignMode,
+  _request?: any,
+  _page?: any
+) => {
   const { request, page } = ctx;
   const url = request.url;
   const domain = new URL(url).hostname;
@@ -32,14 +37,14 @@ export const routerHandler = async (ctx: any, mode: CampaignMode) => {
       signals: [],
       score: 0,
     });
-    log.info(`🆕 Initialized domain context for: ${domain}`);
+    log.info(`🚀 Initialized domain context for: ${domain}`);
   }
 
   const context = domainContexts.get(domain)!;
 
   // Avoid reprocessing already-visited pages
   if (context.pagesVisited.has(url)) {
-    log.info(`⏭️ Already visited: ${url}`);
+    log.info(`⏩ Already visited: ${url}`);
     return;
   }
 
@@ -49,14 +54,14 @@ export const routerHandler = async (ctx: any, mode: CampaignMode) => {
   const snapshot = await buildSnapshot(page, url);
   log.info(`✅ Snapshot complete. Running extractors.`);
 
-  await runExtractors(snapshot, context, mode);
+  await runExtractors(snapshot, context, mode, ctx.input);
   log.info(`🔍 Extractors finished. Checking stop rules.`);
 
   if (FORCE_PUSH || stopRulesMet(context)) {
-    log.info(`🚦 Stop rules met. Persisting and pushing context.`);
+    log.info(`🛑 Stop rules met. Persisting and pushing context.`);
     await persistAndPush(context, {});
   } else {
-    log.info(`🧭 Continuing crawl. Score: ${context.score}`);
+    log.info(`🔄 Continuing crawl. Score: ${context.score}`);
   }
 };
 
