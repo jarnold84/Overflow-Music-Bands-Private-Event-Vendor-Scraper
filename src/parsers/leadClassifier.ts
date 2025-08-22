@@ -1,7 +1,8 @@
 // File: src/parsers/leadClassifier.ts
 
 import type { PageSnapshot } from '../utils/snapshot';
-import { leadTypeConfigs } from '../configs/leadTypeConfigs.js';
+import type { LeadTypeConfig } from '../configs/leadTypeConfigs.js';
+import { defaultLeadTypeConfigs } from '../configs/leadTypeConfigs.js';
 import { callOpenAIClassifier } from '../utils/gptClassifier.js';
 
 export interface LeadMatch {
@@ -17,14 +18,18 @@ export interface Lead {
 /**
  * Enhanced classifier: detects multiple matching lead types,
  * scores by keyword frequency, and falls back to GPT if needed.
+ * Accepts optional config for campaign-specific classification.
  */
-export async function classifyLead(snapshot: PageSnapshot): Promise<Lead> {
+export async function classifyLead(
+  snapshot: PageSnapshot,
+  configs: LeadTypeConfig[] = defaultLeadTypeConfigs
+): Promise<Lead> {
   const { text } = snapshot;
   const lowercaseText = text.toLowerCase();
 
   const matches: LeadMatch[] = [];
 
-  for (const config of leadTypeConfigs) {
+  for (const config of configs) {
     let frequency = 0;
     for (const keyword of config.keywords) {
       frequency += lowercaseText.split(keyword).length - 1;
@@ -45,11 +50,13 @@ export async function classifyLead(snapshot: PageSnapshot): Promise<Lead> {
   return { matches, primary };
 }
 
-
 /*
-Category prioritization rules
-→ Add logic to prefer certain categories over others when multiple matches occur (e.g., prioritize “Podcast” over “MediaHost” if both match).
+🧠 Future Enhancements:
 
-Campaign-specific classifier sets
-→ Swap leadTypeConfigs dynamically based on campaign type (e.g., coach_outreach, festival_bookings) to fine-tune detection.
+- ✅ [DONE] Modular config: supports campaign-specific classifier configs
+- 🧠 Campaign mode router: Pass campaign-specific configs from `router.ts` or `actor.ts`
+- 🧠 Category prioritization: If multiple high-confidence types, prefer based on hierarchy (e.g. Podcast > MediaHost)
+- 🧠 Confidence boosting for cross-signal reinforcement (e.g., matching values + services)
+- 🧠 Log keyword hits per category for transparency and debugging
+- 🧠 Export debug version with per-keyword match counts
 */
