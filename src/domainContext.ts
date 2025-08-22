@@ -52,7 +52,7 @@ export function addSignals(ctx: DomainContext, sig: PageSignals) {
     ctx.bookingLink ??= s.bookingLink;
     ctx.people ??= s.people;
     ctx.leadName ??= s.leadName;
-    ctx.company ??= s.company;
+    ctx.businessName ??= s.businessName;
     ctx.portfolioLinks ??= s.portfolioLinks;
 
     if (s.socials) {
