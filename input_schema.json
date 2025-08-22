@@ -1,0 +1,61 @@
+{
+  "title": "Overflow Universal Lead Scraper",
+  "description": "Input schema for campaign-specific scraping of websites to extract lead intelligence and messaging signals.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "startUrls": {
+      "title": "Start URLs",
+      "type": "array",
+      "description": "List of URLs to begin scraping from. These should be relevant to the campaign (e.g. vendor directories, faculty pages, retreat listings).",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "minItems": 1
+    },
+    "campaignMode": {
+      "title": "Campaign Mode",
+      "type": "string",
+      "description": "Which type of campaign this run supports. Determines classification and routing logic.",
+      "default": "universal",
+      "enum": [
+        "universal",
+        "wedding",
+        "corporate",
+        "mixed"
+      ]
+    },
+    "maxConcurrency": {
+      "title": "Max Concurrency",
+      "type": "integer",
+      "description": "Maximum number of concurrent pages crawled. Defaults to 10.",
+      "default": 10,
+      "minimum": 1
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "type": "object",
+      "description": "Use Apify proxy or custom proxy URLs for distributed IPs.",
+      "properties": {
+        "useApifyProxy": {
+          "type": "boolean",
+          "default": true
+        },
+        "proxyUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "includeRawText": {
+      "title": "Include Raw Text",
+      "type": "boolean",
+      "description": "Whether to store raw page text in the output. Useful for debugging or GPT enrichment.",
+      "default": false
+    }
+  },
+  "required": ["startUrls"]
+}
