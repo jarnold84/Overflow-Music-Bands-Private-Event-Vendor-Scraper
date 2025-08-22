@@ -13,12 +13,39 @@ export interface PageSnapshot {
 }
 
 /**
- * Builds a snapshot of the current page, including its HTML content,
- * visible text, title, and URL.
- *
- * @param page - The Playwright Page object
- * @param url - The canonical URL for the page (typically request.url)
- * @returns A PageSnapshot object
+ * Unified snapshot builder. Use `snapshotPage()` for crawler ctx,
+ * or `buildSnapshot()` for standalone Playwright page + URL.
+ */
+
+/**
+ * Main crawler-friendly snapshot function.
+ * Accepts Crawlee context and extracts full snapshot.
+ */
+export async function snapshotPage(ctx): Promise<PageSnapshot> {
+  try {
+    const html = await ctx.page.content();
+    const title = await ctx.page.title();
+    const text = await ctx.page.evaluate(() => document.body?.innerText || '');
+
+    return {
+      url: ctx.request.url,
+      html,
+      title,
+      text,
+    };
+  } catch (err) {
+    console.warn(`⚠️ Failed to snapshot ${ctx.request.url}:`, err);
+    return {
+      url: ctx.request.url,
+      html: '',
+      title: '',
+      text: '',
+    };
+  }
+}
+
+/**
+ * Alternative snapshot builder for raw Playwright `page` and custom URL.
  */
 export async function buildSnapshot(page: Page, url: string): Promise<PageSnapshot> {
   try {
@@ -44,7 +71,7 @@ export async function buildSnapshot(page: Page, url: string): Promise<PageSnapsh
 }
 
 /*
-TO DO (optional future upgrades):
+🔧 TO DO (optional future upgrades):
 - Add DOM hash or content checksum for deduplication
 - Strip out script/style tags from raw HTML if unnecessary
 - Add timestamp or crawlId to support versioning
