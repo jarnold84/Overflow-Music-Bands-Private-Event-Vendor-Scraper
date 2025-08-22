@@ -41,7 +41,7 @@ export const routerHandler = async (
   const url = request.url;
   const domain = new URL(url).hostname;
 
-  const FORCE_PUSH = true; // For dev/test; toggle false in prod
+  const FORCE_PUSH = process.env.FORCE_PUSH === 'true'; // Configurable via env var (default false)
 
   log.info(`🔍 RouterHandler triggered for URL: ${url}`);
 
