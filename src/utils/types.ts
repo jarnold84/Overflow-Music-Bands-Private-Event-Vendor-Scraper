@@ -71,6 +71,7 @@ export interface DomainContext {
   signals: PageSignals[];
   score: number;
   stopReason?: string;
+  structureMode?: string;
 
   // Contact & classification
   leadName?: string;
