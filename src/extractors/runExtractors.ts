@@ -15,6 +15,8 @@ import { extractBusinessName } from './businessName.js';
 import { chooseBestContact } from '../parsers/contactChooser.js';
 import { normalizeLocation } from '../parsers/locationNorm.js';
 import { detectStructureMode } from '../analyzers/detectStructureMode.js';
+import { classifyLead } from '../parsers/leadClassifier.js';
+import { campaignModeConfigs } from '../configs/campaignModeConfigs.js';
 
 export async function runExtractors(
   snapshot: PageSnapshot,
@@ -24,12 +26,15 @@ export async function runExtractors(
 ): Promise<void> {
   const { html, text } = snapshot;
 
-  // Detect and store structure mode
+  // 📌 Attach campaignMode for use by other downstream steps
+  ctx.campaignMode = input.campaignMode ?? 'universal';
+
+  // 🏗 Structure mode
   const structureMode = detectStructureMode(snapshot);
   ctx.structureMode = structureMode;
   console.log(`🏗 Detected structure mode: ${structureMode}`);
 
-  // Basic contacts
+  // 📬 Basic contact extraction
   const emails = extractEmails(text);
   const phones = extractPhones(text);
   const contactCount = Math.max(emails.length, phones.length);
@@ -38,47 +43,32 @@ export async function runExtractors(
     .filter((c) => c.email || c.phone);
   ctx.bestContact = chooseBestContact(ctx.contacts);
 
-  // ✨ NEW: Extract lead and business name separately
+  // 🧠 Campaign-mode-aware classification
+  const leadTypeConfigs =
+    campaignModeConfigs[ctx.campaignMode] ?? campaignModeConfigs.universal;
+
+  const { matches, primary } = await classifyLead(snapshot, leadTypeConfigs);
+  ctx.leadTypes = matches.map((m) => m.leadType);
+  ctx.leadConfidence = primary.confidence;
+
+  // 👤 Core identity fields
   ctx.leadName = extractLeadName(html) ?? undefined;
   ctx.businessName = extractBusinessName(html) ?? undefined;
 
-  // Core fields
+  // 💼 Services, style, address
   ctx.services = extractServices(text);
   ctx.styleVibe = extractStyleVibe(text);
 
-  // Address → normalized location
   const address = extractAddress(text);
   if (address) ctx.location = normalizeLocation(address);
 
-  // ✨ NEW: Expanded social platform support
+  // 🌐 Socials
   ctx.socials = extractSocials(html);
 
-  // ✨ Optional debug or fallback: raw text capture
+  // 🪪 Optional debug: save raw page text
   if (input.includeRawText) {
     ctx.text = text;
   }
 
-  // (Optional) Structure-specific extractor logic could go here later
+  // 🧩 Structure-specific extractors could be inserted here in future
 }
-
-/*
-TO DO:
-
-- 💬 Add `extractValues(text)` and `extractSocialProof(text)` modules
-    → for ethical positioning, testimonials, etc.
-- 🧠 Add GPT fallback if leadName or businessName are still missing
-    → requires snapshot text and context
-- 🧑‍🧱 Add extraction of team members/people (e.g., from team/staff/about pages)
-    → update DomainContext.people: Contact[]
-- 🕸️ Add `sourcePage` tagging per signal (e.g. came from /about or /services)
-- ✨ Add plugin-style modular extractor loader by signal type
-    → e.g. runExtractors becomes dynamically loaded pipeline
-- 📊 Add basic signal confidence scoring (e.g., email found in footer = high)
-- 🛠️ Create per-use-case extractor configs in future (e.g. RetreatHost, PodcastGuest)
-
-- Improve leadName/businessName distinction using structural cues (e.g. "About" vs "Team" pages)
-- Enrich socials with follower counts, handles, bios (future enhancement)
-- Allow confidence scoring or field-level provenance tags (e.g. "leadName came from /about")
-- Log fallback triggers when leadName/businessName not detected
-- De-duplicate signals across pages (e.g. contact blocks)
-*/
