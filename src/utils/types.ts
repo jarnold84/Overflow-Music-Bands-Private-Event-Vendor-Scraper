@@ -1,10 +1,10 @@
-// src/utils/types.ts
+// File: src/utils/types.ts
 
 export type CampaignMode = 'wedding' | 'corporate' | 'mixed' | 'universal';
 
 export type ActorInput = {
   startUrls: string[];
-  mode?: CampaignMode; // 👈 make mode optional for flexibility
+  campaignMode?: CampaignMode; // ✅ Renamed from `mode` to clarify usage
   maxConcurrency?: number;
   proxyConfiguration?: {
     proxyUrls?: string[];
@@ -26,6 +26,7 @@ export interface PageSnapshot {
   url: string;
   html: string;
   text: string;
+  title?: string;
 }
 
 export interface PageSignals {
@@ -54,14 +55,8 @@ export interface PageSignals {
   leadName?: string;
   businessName?: string;
   portfolioLinks?: string[];
-  text?: string; // for classifier scoring
-  socials?: Record<
-    string,
-    {
-      handle?: string;
-      url?: string;
-    }
-  >;
+  text?: string;
+  socials?: Record<string, { handle?: string; url?: string }>;
 }
 
 export interface DomainContext {
@@ -72,11 +67,12 @@ export interface DomainContext {
   score: number;
   stopReason?: string;
   structureMode?: string;
+  campaignMode?: CampaignMode; // ✅ Injected for campaign-based routing
 
   // Contact & classification
   leadName?: string;
   businessName?: string;
-  leadTypes?: string[]; // ✨ New: All matched types
+  leadTypes?: string[];
   leadConfidence?: number;
   contacts?: Contact[];
   bestContact?: Contact | null;
@@ -109,19 +105,13 @@ export interface DomainContext {
   crawlRunId?: string;
   ts?: string;
   text?: string;
-  socials?: Record<
-    string,
-    {
-      handle?: string;
-      url?: string;
-    }
-  >;
+  socials?: Record<string, { handle?: string; url?: string }>;
 }
 
 export interface Lead {
   leadName?: string;
   businessName?: string;
-  leadTypes?: string[]; // ✨ New: All matched types
+  leadTypes?: string[];
   leadConfidence?: number;
   contacts?: Contact[];
   bestContact?: Contact;
@@ -153,6 +143,7 @@ export interface Lead {
 }
 
 export interface MessagePersona {
+  leadTypes?: string[];
   leadName?: string;
   businessName?: string;
   services?: string[];
@@ -174,12 +165,10 @@ export interface MessagePersona {
 }
 
 /*
-🔮 TO DO (Optional Future Enhancements):
-- Add `missingInfoReasons?: string[]` for fallback logic and debugging
-- Add `sourcePages?: { label: string; url: string }[]` to trace signal origin
-- Add `hasValidContact: boolean` for routing logic
-- Add `tags?: string[]` for GPT-generated metadata
-- Add `primaryChannel?: "email" | "instagram_dm" | "contact_form"` for routing
-- Enrich `socials` with metadata (followers, bios, etc.)
-- Move file to `src/types.ts` for consistency and clarity
+🧠 Optional TO DOs:
+- Add `sourcePages?: { label: string; url: string }[]` to support traceability
+- Add `missingFields?: string[]` for enrichment logic
+- Add `messagingChannel?: "email" | "ig_dm" | "form"` for use-case targeting
+- Add `campaignId?: string` to support run tracking and comparisons
+- Move to /types directory and centralize all shared types
 */
