@@ -50,6 +50,7 @@ export async function persistAndPush(ctx: DomainContext, _input: any) {
     // Crawl metadata
     crawlRunId: ctx.crawlRunId,
     ts: ctx.ts ?? new Date().toISOString(),
+    structureMode: ctx.structureMode, // ✨ New: Include structure detection result
 
     // Socials (structured format)
     socials: ctx.socials ?? {},
@@ -81,6 +82,7 @@ function shouldIncludeRawText(ctx: DomainContext): boolean {
     ctx.domain.includes('localhost')
   );
 }
+
 
 /* 
 🛠️ TO DO (Optional Future Enhancements)
