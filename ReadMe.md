@@ -100,6 +100,10 @@ Integrations via Make.com
 📁 Input Schema (via UI)
 {
   "startUrls": ["https://example.com"],
+  "startUrls": [
+    "https://example.com",
+    { "url": "https://another.com" }
+  ],
   "campaignMode": "wedding",
   "maxConcurrency": 10,
   "includeRawText": false
