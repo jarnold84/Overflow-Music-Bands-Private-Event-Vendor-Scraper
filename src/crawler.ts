@@ -3,6 +3,8 @@
 import { PlaywrightCrawler, log } from 'crawlee';
 import { Actor } from 'apify';
 import type { ActorInput } from './utils/types.js';
+import { detectStructureMode } from './analyzers/detectStructureMode.js';
+import { snapshotPage } from './utils/snapshot.js';
 
 export async function createCrawler(input: ActorInput) {
   const proxy = input.proxyConfiguration
@@ -15,10 +17,23 @@ export async function createCrawler(input: ActorInput) {
     proxyConfiguration: proxy,
     requestHandlerTimeoutSecs: 60,
 
-    // 🧠 Request handler uses mode-aware router
+    // 🧠 Request handler uses campaign-aware + structure-aware router
     requestHandler: async (ctx) => {
       log.info(`🌐 Handling: ${ctx.request.url}`);
-      await (await import('./router.js')).routerHandler(ctx, input.mode);
+
+      // Inject structureMode if not already present
+      if (!ctx.request.userData.structureMode) {
+        const snapshot = await snapshotPage(ctx.page, ctx.request.url);
+        const structureMode = detectStructureMode(snapshot);
+        ctx.request.userData.structureMode = structureMode;
+        log.info(`🏗️ Detected structureMode: ${structureMode}`);
+      }
+
+      await (await import('./router.js')).routerHandler(
+        ctx,
+        input.campaignMode,
+        ctx.request.userData.structureMode
+      );
     },
 
     // 🧭 Optimize browser for scraping
@@ -41,12 +56,22 @@ export async function createCrawler(input: ActorInput) {
 }
 
 /*
-TO DO (optional future upgrades):
-- Add support for rotating user agents (anti-bot evasion)
-- Add session pooling for more stable login or CAPTCHA-prone sites
-- Surface cookie management (esp. for future DM-only contact scraping)
-- Add a `retryHandler` to flag permanently failed URLs
-- Log domain crawl summary at the end of each domain run
-- Integrate with Apify logging system for crawl metrics per domain
-- Add mobile emulation for sites that hide contact info on desktop
+🛠️ TO DO: Optional Future Upgrades
+
+🔁 Rotating user agents to reduce anti-bot detection
+
+📦 Session pooling for login/CAPTCHA-prone environments
+
+🍪 Cookie management system for DM-only fallback or gated content
+
+🔄 Retry handler for permanently failed or redirected URLs
+
+📊 Log summary stats per domain: pages visited, contacts found, crawl duration
+
+📈 Integrate with Apify run logs to expose crawl-level metrics
+
+📱 Add mobile emulation fallback for sites that hide email/contact on desktop
+
+🧠 Enable structureMode-based routing paths (e.g., skip nav pages for single-page, expand team-directory depth)
+
 */
