@@ -5,7 +5,8 @@ import { buildSnapshot } from './utils/snapshot.js';
 import { runExtractors } from './extractors/runExtractors.js';
 import { persistAndPush } from './output.js';
 import { stopRulesMet } from './stopRules.js';
-import type { DomainContext, CampaignMode } from './utils/types.js';
+import { detectStructureMode } from './analyzers/detectStructureMode.js';
+import type { DomainContext } from './utils/types.js';
 
 export const router = Router.create();
 const domainContexts = new Map<string, DomainContext>();
@@ -16,7 +17,7 @@ const domainContexts = new Map<string, DomainContext>();
  */
 export const routerHandler = async (
   ctx: any,
-  mode: CampaignMode,
+  _campaignMode: string, // Deprecated: we now detect structure dynamically
   _request?: any,
   _page?: any
 ) => {
@@ -52,9 +53,14 @@ export const routerHandler = async (
   log.info(`📸 Building snapshot for: ${url}`);
 
   const snapshot = await buildSnapshot(page, url);
-  log.info(`✅ Snapshot complete. Running extractors.`);
+  log.info(`✅ Snapshot complete. Detecting structure mode.`);
 
-  await runExtractors(snapshot, context, mode, ctx.input);
+  const structureMode = detectStructureMode(snapshot);
+  context.structureMode = structureMode;
+  log.info(`🏗 Structure mode detected: ${structureMode}`);
+
+  log.info(`🔧 Running extractors.`);
+  await runExtractors(snapshot, context, structureMode, ctx.input);
   log.info(`🔍 Extractors finished. Checking stop rules.`);
 
   if (FORCE_PUSH || stopRulesMet(context)) {
@@ -64,6 +70,7 @@ export const routerHandler = async (
     log.info(`🔄 Continuing crawl. Score: ${context.score}`);
   }
 };
+
 
 /*
 TO DO (optional upgrades):
