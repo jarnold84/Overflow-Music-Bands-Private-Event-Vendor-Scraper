@@ -12,8 +12,7 @@ export async function persistAndPush(ctx: DomainContext, _input: any) {
     seedUrl: ctx.seedUrl,
 
     // Lead identity
-    leadType: ctx.leadType,
-    leadConfidence: ctx.leadConfidence,
+    leadTypes: ctx.leadTypes, // 🔄 Changed from leadType to leadTypes (array)
     leadName: ctx.leadName,
     businessName: ctx.businessName,
 
