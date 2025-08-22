@@ -4,6 +4,7 @@ import type { Lead, MessagePersona } from '../utils/types';
 
 export function buildMessagePersona(lead: Lead): MessagePersona {
   return {
+    leadTypes: lead.leadTypes ?? [], // 🆕 Multi-match lead types
     leadName: lead.leadName,
     businessName: lead.businessName,
     segmentFocus: lead.segmentFocus,
