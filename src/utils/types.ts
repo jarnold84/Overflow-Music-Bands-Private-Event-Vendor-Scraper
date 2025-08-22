@@ -3,7 +3,7 @@
 export type CampaignMode = 'wedding' | 'corporate' | 'mixed' | 'universal';
 
 export type ActorInput = {
-  startUrls: string[];
+  startUrls: Array<string | { url: string }>;
   campaignMode?: CampaignMode; // ✅ Renamed from `mode` to clarify usage
   maxConcurrency?: number;
   proxyConfiguration?: {
