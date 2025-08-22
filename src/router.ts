@@ -6,7 +6,7 @@ import { runExtractors } from './extractors/runExtractors.js';
 import { persistAndPush } from './output.js';
 import { stopRulesMet } from './stopRules.js';
 import { detectStructureMode } from './analyzers/detectStructureMode.js';
-import type { DomainContext } from './utils/types.js';
+import type { DomainContext, CampaignMode } from './utils/types.js';
 
 export const router = Router.create();
 const domainContexts = new Map<string, DomainContext>();
@@ -33,7 +33,7 @@ function initDomainContext(domain: string, url: string): DomainContext {
  */
 export const routerHandler = async (
   ctx: any,
-  campaignMode: string, // ✅ Now used for classification configs
+  campaignMode: CampaignMode,
   _request?: any,
   _page?: any
 ) => {
@@ -69,7 +69,7 @@ export const routerHandler = async (
   await runExtractors(snapshot, context, structureMode, campaignMode);
   log.info(`🔍 Extractors finished. Checking stop rules.`);
 
-  if (FORCE_PUSH || stopRulesMet(context)) {
+  if (FORCE_PUSH || await stopRulesMet(context)) {
     log.info(`🛑 Stop rules met. Persisting and pushing context.`);
     await persistAndPush(context, {});
   } else {
