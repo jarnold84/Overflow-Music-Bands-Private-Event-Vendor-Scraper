@@ -76,7 +76,7 @@ export interface DomainContext {
   // Contact & classification
   leadName?: string;
   businessName?: string;
-  leadType?: string;
+  leadTypes?: string[]; // ✨ New: All matched types
   leadConfidence?: number;
   contacts?: Contact[];
   bestContact?: Contact | null;
@@ -121,7 +121,7 @@ export interface DomainContext {
 export interface Lead {
   leadName?: string;
   businessName?: string;
-  leadType?: string;
+  leadTypes?: string[]; // ✨ New: All matched types
   leadConfidence?: number;
   contacts?: Contact[];
   bestContact?: Contact;
