@@ -17,10 +17,15 @@ export function shouldStop(ctx: DomainContext, cfg: StopRulesConfig = {}): boole
   const scoreThreshold = cfg.scoreThreshold ?? 0.6;
 
   const hasContact =
-    !!ctx.bestContact?.email || !!ctx.bestContact?.contactPage || !!ctx.bestContact?.rfpUrl;
+    !!ctx.bestContact?.email ||
+    !!ctx.bestContact?.contactPage ||
+    !!ctx.bestContact?.rfpUrl;
 
   const hasLead =
-    Array.isArray(ctx.leadTypes) && ctx.leadTypes.length > 0 && (ctx.leadConfidence ?? 0) > leadConfidenceThreshold;
+    !!ctx.leadType &&
+    Array.isArray(ctx.leadTypes) &&
+    ctx.leadTypes.length > 0 &&
+    (ctx.leadConfidence ?? 0) > leadConfidenceThreshold;
 
   const hasContext =
     !!(ctx.segmentFocus || ctx.services || ctx.capacityNotes || ctx.location);
@@ -42,7 +47,12 @@ export async function recomputeScore(ctx: DomainContext, cfg: StopRulesConfig = 
 
   const lastText = [...ctx.signals].reverse().find((s) => s.text)?.text;
   if (lastText) {
-    const { primary, matches } = await classifyLead({ url: ctx.seedUrl, html: '', title: '', text: lastText });
+    const { primary, matches } = await classifyLead({
+      url: ctx.seedUrl,
+      html: '',
+      title: '',
+      text: lastText,
+    });
 
     ctx.leadType = primary.leadType;
     ctx.leadTypes = matches.map((m) => m.leadType);
@@ -63,7 +73,10 @@ export async function recomputeScore(ctx: DomainContext, cfg: StopRulesConfig = 
 /**
  * Master stop-rule: recompute, then decide.
  */
-export async function stopRulesMet(ctx: DomainContext, cfg: StopRulesConfig = {}): Promise<boolean> {
+export async function stopRulesMet(
+  ctx: DomainContext,
+  cfg: StopRulesConfig = {}
+): Promise<boolean> {
   await recomputeScore(ctx, cfg);
   return shouldStop(ctx, cfg);
 }
