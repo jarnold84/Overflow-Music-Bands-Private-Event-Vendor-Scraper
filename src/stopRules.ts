@@ -21,7 +21,7 @@ export function shouldStop(ctx: DomainContext, cfg: StopRulesConfig = {}): boole
     !!ctx.bestContact?.email || !!ctx.bestContact?.contactPage || !!ctx.bestContact?.rfpUrl;
 
   const hasLead =
-    !!ctx.leadType && (ctx.leadConfidence ?? 0) > leadConfidenceThreshold;
+    Array.isArray(ctx.leadTypes) && ctx.leadTypes.length > 0 && (ctx.leadConfidence ?? 0) > leadConfidenceThreshold;
 
   // ORIGINAL SEMANTICS: treat services as context if present at all
   const hasContext =
@@ -44,15 +44,16 @@ export function recomputeScore(ctx: DomainContext, cfg: StopRulesConfig = {}): v
   // Classify from latest text
   const lastText = [...ctx.signals].reverse().find((s) => s.text)?.text;
   if (lastText) {
-    const { type, confidence } = classifyLead({ url: ctx.seedUrl, html: '', title: '', text: lastText });
+    const { type, confidence, types } = classifyLead({ url: ctx.seedUrl, html: '', title: '', text: lastText });
     ctx.leadType = type;
+    ctx.leadTypes = types ?? [type];
     ctx.leadConfidence = confidence;
   }
 
   // Score (original weights, but null-safe)
   let score = 0;
   if (ctx.bestContact?.email) score += 0.4;
-  if (ctx.leadType && (ctx.leadConfidence ?? 0) > leadConfidenceThreshold) score += 0.2;
+  if (ctx.leadTypes?.length && (ctx.leadConfidence ?? 0) > leadConfidenceThreshold) score += 0.2;
   if (ctx.segmentFocus) score += 0.1;
   if (ctx.services) score += 0.1; // truthy, not length
   if (ctx.capacityNotes || ctx.location) score += 0.1;
